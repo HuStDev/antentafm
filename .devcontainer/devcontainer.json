@@ -1,0 +1,19 @@
+{
+    "image": "hust/node:0.1.0",
+
+    "mounts": [
+      "source=${localWorkspaceFolder}/website/backend,target=/usr/app,type=bind,consistency=cached"
+    ],
+  
+    // Set *default* container specific settings.json values on container create.
+    "settings": {
+      "terminal.integrated.defaultProfile.linux": "bash"
+    },
+  
+    // Add the IDs of extensions you want installed when the container is created.
+    //"extensions": [""],
+  
+    // An array port numbers to forward
+    "forwardPorts": [7000],
+    "appPort": 7000
+  }
