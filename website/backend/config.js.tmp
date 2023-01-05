@@ -1,0 +1,1 @@
+export const rocket_chat_url = "http://192.168.10.52:3000"

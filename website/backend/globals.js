@@ -1,0 +1,6 @@
+export const key_user_id = "user_id"
+export const key_user_name = "user_name"
+export const key_user_password = "user_password"
+export const key_auth_token = "auth_token"
+export const key_message = "message"
+export const key_status = "status"

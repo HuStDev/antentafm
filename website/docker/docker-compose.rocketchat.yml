@@ -7,6 +7,8 @@ services:
   rocketchat:
     image: registry.rocket.chat/rocketchat/rocket.chat:${ROCKET_CHAT_RELEASE:-5.4.0}
     restart: on-failure
+    networks:
+      - "antentafm"
     #labels:
     #  traefik.enable: "true"
     #  traefik.http.routers.rocketchat.rule: Host(`${DOMAIN}`)
@@ -25,11 +27,13 @@ services:
     expose:
       - 3000
     ports:
-      - "${ROCKET_CHAT_HOST_PORT:-3000}:3000"
+      - "3000:3000"
 
   mongodb:
     image: docker.io/bitnami/mongodb:${MONGODB_RELEASE:-5.0.14}
     restart: on-failure
+    networks:
+      - "antentafm"
     volumes:
       - mongodb:/bitnami/mongodb
     environment:
@@ -43,3 +47,6 @@ services:
       ALLOW_EMPTY_PASSWORD: ${MONGODB_ALLOW_EMPTY_PASSWORD:-yes}
     labels:
       - "traefik.enable=false"
+
+networks:
+  antentafm:

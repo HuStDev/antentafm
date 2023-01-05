@@ -1,4 +1,6 @@
 #!/bin/bash
 scripts=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-docker-compose -f $scripts/docker-compose.rocketchat.yml up
+pushd $scripts/..
+docker-compose -f $scripts/docker-compose.rocketchat.yml down
+popd

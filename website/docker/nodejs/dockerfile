@@ -4,6 +4,7 @@ FROM node:19.2.0
 # Otherwise error npm ERR! Tracker "idealTree" already exists will be raised
 WORKDIR /usr/app
 EXPOSE 7000
+EXPOSE 9229
 
 COPY entrypoint.sh /usr/entrypoint.sh
 RUN ["chmod", "+x", "/usr/entrypoint.sh"]
