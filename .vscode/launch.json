@@ -5,13 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "NPM: Attach website/backend",
+            "name": "Node Attach",
             "port": 9229,
             "request": "attach",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "type": "node"
-        }
+        },
     ]
 }

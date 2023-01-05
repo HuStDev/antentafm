@@ -6,18 +6,75 @@
         {
             "type": "npm",
             "script": "debug",
-            "path": "website/backend",
+            "path": "website",
             "problemMatcher": [],
-            "label": "npm: debug - website/backend",
+            "label": "npm: debug - website",
             "detail": "node server.js"
         },
         {
             "type": "npm",
             "script": "install",
-            "path": "website/backend",
+            "path": "website",
             "problemMatcher": [],
-            "label": "npm: install - website/backend",
+            "label": "npm: install - website",
             "detail": "install dependencies from package"
+        },
+        {
+            "type": "shell",
+            "command": [
+                "docker",
+                "network",
+                "connect",
+                "docker_antentafm",
+                "naughty_neumann"
+            ],
+            "label": "Docker network connect Node"
+        },
+        {
+            "type": "shell",
+            "command": [
+                "cd",
+                "website",
+                "&&",
+                "docker-compose",
+                //"-f",
+                //"./docker/docker-compose.rocketchat.yml",
+                "-f",
+                "./docker/docker-compose.node.yml",
+                "up"
+            ],
+            "label": "Docker compose up"
+        },
+        {
+            "type": "shell",
+            "command": [
+                "cd",
+                "website",
+                "&&",
+                "docker-compose",
+                "-f",
+                "./docker/docker-compose.rocketchat.yml",
+                "-f",
+                "./docker/docker-compose.node.yml",
+                "down"
+            ],
+            "label": "Docker compose down",
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "command": [
+                "cd",
+                "website/docker/nodejs",
+                "&&",
+                "docker",
+                "build",
+                "-t",
+                "hust/node:0.1.0",
+                "."
+            ],
+            "label": "Docker build hust node",
+            "problemMatcher": []
         }
     ]
   }
