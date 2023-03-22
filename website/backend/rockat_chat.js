@@ -17,7 +17,7 @@ export async function login(username, password) {
 
         if (response.status != 200) {
             console.log(response.status, reponse.statusText);
-            throw Errors.LOGIN_CREDENTIALS_FAILED
+            throw Errors.LOGIN_INVALID_CREDENTIALS
         }
 
         let result = {};
@@ -27,7 +27,7 @@ export async function login(username, password) {
         return result;
     } catch(error) {
         console.log(error.message);
-        throw Errors.LOGIN_CREDENTIALS_FAILED;
+        throw Errors.LOGIN_UNEXPECTED_ERROR;
     }
 }
 
@@ -43,6 +43,6 @@ export async function validate_session(token) {
         return response;
     } catch(error) {
         console.log(error.message);
-        throw Errors.LOGIN_TOKEN_FAILED;
+        throw Errors.LOGIN_INVALID_SESSION_TOKEN;
     }
 }

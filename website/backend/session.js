@@ -3,54 +3,48 @@ import * as Config from './globals.js';
 
 export class Session {
     static login(request, response) {
-        const session_data = Session.__login(request);
-        response.status(session_data[Config.key_status]).send(session_data);
-    }
-
-    static __login(request) {
         if (Config.key_auth_token in request.body) {
-            return Session.__login_with_token(request);
+            return Session.__login_with_token(request, response);
         } else {
-            return Session.__login_with_credentials(request);
+            return Session.__login_with_credentials(request, response);
         }
     }
 
-    static __login_with_token(request) {
+    static __login_with_token(request, response) {
         RocketChat.validate_session(
             request.body[Config.key_auth_token]
         ).then(function (response) {
-            responst[Config.key_status] = 200;
-            return response;
+            let data = {};
+            data[Config.key_status] = 200;
+
+            response.status(data[Config.key_status]).send(data);
         }).catch(function(error) {
-            let response = {};
+            let data = {};
+            data[Config.key_auth_token] = null;
+            data[Config.key_user_id] = null;
+            data[Config.key_message] = error.key;
+            data[Config.key_status] = 401;
 
-            response[Config.key_auth_token] = null;
-            response[Config.key_user_id] = null;
-
-            response[Config.key_message] = "";
-            responst[Config.key_status] = 401;
-
-            return response;
+            response.status(data[Config.key_status]).send(data);
         })
     }
 
-    static __login_with_credentials(request) {
+    static __login_with_credentials(request, response) {
         RocketChat.login(
             request.body[Config.key_user_name],
             request.body[Config.key_user_name]
-        ).then(function (response) {
-            responst[Config.key_status] = 200;
-            return response;
+        ).then(function (data) {
+            data[Config.key_status] = 200;
+
+            response.status(data[Config.key_status]).send(data);
         }).catch(function(error) {
-            let response = {};
+            let data = {};
+            data[Config.key_auth_token] = null;
+            data[Config.key_user_id] = null;
+            data[Config.key_message] = error.key;
+            data[Config.key_status] = 401;
 
-            response[Config.key_auth_token] = null;
-            response[Config.key_user_id] = null;
-
-            response[Config.key_message] = "";
-            responst[Config.key_status] = 401;
-
-            return response;
+            response.status(data[Config.key_status]).send(data);
         })
     }
 }

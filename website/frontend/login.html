@@ -96,7 +96,7 @@
                 error : function(response_header) {
                     // In case of error, remove auth token from session storage, post error and reload form
                     localStorage.removeItem('antentafm_token');
-                    alert(response_header.responseJSON['status_message']);
+                    alert(response_header.responseJSON['message']);
 
                     set_default_form_values();
                     update_login_form();
