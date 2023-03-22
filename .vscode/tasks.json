@@ -22,48 +22,6 @@
         {
             "type": "shell",
             "command": [
-                "docker",
-                "network",
-                "connect",
-                "docker_antentafm",
-                "naughty_neumann"
-            ],
-            "label": "Docker network connect Node"
-        },
-        {
-            "type": "shell",
-            "command": [
-                "cd",
-                "website",
-                "&&",
-                "docker-compose",
-                //"-f",
-                //"./docker/docker-compose.rocketchat.yml",
-                "-f",
-                "./docker/docker-compose.node.yml",
-                "up"
-            ],
-            "label": "Docker compose up"
-        },
-        {
-            "type": "shell",
-            "command": [
-                "cd",
-                "website",
-                "&&",
-                "docker-compose",
-                "-f",
-                "./docker/docker-compose.rocketchat.yml",
-                "-f",
-                "./docker/docker-compose.node.yml",
-                "down"
-            ],
-            "label": "Docker compose down",
-            "problemMatcher": []
-        },
-        {
-            "type": "shell",
-            "command": [
                 "cd",
                 "website/docker/nodejs",
                 "&&",
