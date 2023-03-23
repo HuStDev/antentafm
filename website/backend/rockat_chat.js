@@ -7,16 +7,32 @@ import { secret_key } from './config.js';
 import { Errors } from './errors.js';
 import * as Global from './globals.js';
 
-function generate_header(payload) {
-    const header_informations = {
+const timeout = 2500; // 2.5s
+
+function generate_auth_header(payload) {
+    const header = {
         headers:{
             'X-Auth-Token': payload[Global.key_auth_token],
             'X-User-Id': payload[Global.key_user_id], 
-            'Content-type': 'application/json'
-        }
+            'Content-type': 'application/json',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, X-User-Id, X-Auth-Token',
+        }, 
+        timeout: timeout
     };
 
-    return header_informations;
+    return header;
+}
+
+function generate_header() {
+    const header = {
+        headers:{
+            'Content-type': 'application/json',
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, X-User-Id, X-Auth-Token',
+        },
+        timeout: timeout
+    };
+
+    return header;
 }
 
 function sign_token(data) {
@@ -32,7 +48,7 @@ function sign_token(data) {
         secret_key,
         {
             algorithm: 'HS256',
-            expiresIn: Math.floor(Date.now() / 1000) + (60 * 3)
+            expiresIn: Math.floor(Date.now() / 1000) + (60 * 15)
         }
     );
 
@@ -66,6 +82,9 @@ export async function login(username, password) {
             {
                 user: username,
                 password: password
+            },
+            {
+                timeout: timeout
             }
         );
 
@@ -99,15 +118,15 @@ export async function verify(token) {
     }
 
     try {
-        let response = await axios.post(
-            rocket_chat_url + '/api/v1/me',
+        const response = await axios.post(
+            rocket_chat_url + '/api/v1/login',
             {
-                //resume: payload[Global.key_auth_token]
+                resume: payload[Global.key_auth_token]
             },
-            generate_header(payload)
+            generate_header()
         );
 
-        return response;
+        return payload;
     } catch(error) {
         console.log(error.message);
         throw Errors.LOGIN_UNEXPECTED_ERROR;

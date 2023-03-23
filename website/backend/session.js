@@ -23,8 +23,7 @@ export class Session {
     static verify(request, response) {
         RocketChat.verify(
             request.body[Global.key_auth_token]
-        ).then(function (response) {
-            let data = {};
+        ).then(function (data) {
             data[Global.key_status] = 200;
 
             response.status(data[Global.key_status]).send(data);
