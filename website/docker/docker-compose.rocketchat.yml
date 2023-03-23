@@ -5,7 +5,7 @@ volumes:
 
 services:
   rocketchat:
-    image: registry.rocket.chat/rocketchat/rocket.chat:${ROCKET_CHAT_RELEASE:-5.4.0}
+    image: registry.rocket.chat/rocketchat/rocket.chat:${ROCKET_CHAT_RELEASE:-5.4.5}
     restart: on-failure
     networks:
       - "antentafm"
