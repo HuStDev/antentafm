@@ -8,7 +8,6 @@ export class Session {
             request.body[Global.key_user_password]
         ).then(function (data) {
             data[Global.key_status] = 200;
-
             response.status(data[Global.key_status]).send(data);
         }).catch(function(error) {
             let data = {};
@@ -20,12 +19,11 @@ export class Session {
         })
     }
 
-    static verify(request, response) {
+    static sso(request, response) {     
         RocketChat.verify(
-            request.body[Global.key_auth_token]
+            request.query[Global.key_auth_token]
         ).then(function (data) {
             data[Global.key_status] = 200;
-
             response.status(data[Global.key_status]).send(data);
         }).catch(function(error) {
             let data = {};

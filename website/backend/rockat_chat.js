@@ -1,6 +1,5 @@
 import axios from 'axios';
 import jsonwebtoken from 'jsonwebtoken';
-import Enum from 'enum';
 
 import { rocket_chat_url } from './config.js';
 import { secret_key } from './config.js';
@@ -110,7 +109,7 @@ export async function verify(token) {
         payload = decode_token(token);
     } catch(error) {
         console.log(error.message);
-        throw Errors.LOGIN_UNEXPECTED_ERROR;
+        throw Errors.LOGIN_INVALID_SESSION_TOKEN;
     }
 
     if (payload == null) {
@@ -126,7 +125,10 @@ export async function verify(token) {
             generate_header()
         );
 
-        return payload;
+        let result = {};
+        result[Global.key_auth_token] = token
+
+        return result;
     } catch(error) {
         console.log(error.message);
         throw Errors.LOGIN_UNEXPECTED_ERROR;
