@@ -2,8 +2,9 @@
   "name": "antentafm",
 
   "dockerComposeFile": [
-    "${localWorkspaceFolder}/website/docker/docker-compose.rocketchat.yml",
-    "${localWorkspaceFolder}/website/docker/docker-compose.node.yml"
+    "${localWorkspaceFolder}/docker/docker-compose.rocketchat.yml",
+    "${localWorkspaceFolder}/docker/docker-compose.node.yml",
+    "${localWorkspaceFolder}/docker/docker-compose.icecast.yml"
   ],
 
   "service": "nodeserver",

@@ -23,7 +23,7 @@
             "type": "shell",
             "command": [
                 "cd",
-                "website/docker/nodejs",
+                "docker/nodejs",
                 "&&",
                 "docker",
                 "build",

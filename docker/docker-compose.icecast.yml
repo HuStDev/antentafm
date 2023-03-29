@@ -1,0 +1,28 @@
+version: "3.7"
+
+volumes:
+  icecast: { driver: local }
+
+services:
+  icecast:
+    image: moul/icecast
+    restart: on-failure
+    networks:
+      - "antentafm"
+    #labels:
+    #  traefik.enable: "true"
+    #  traefik.http.routers.rocketchat.rule: Host(`${DOMAIN}`)
+    #  traefik.http.routers.rocketchat.tls: "true"
+    #  traefik.http.routers.rocketchat.entrypoints: https
+    #  traefik.http.routers.rocketchat.tls.certresolver: le
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - icecast:/var/log/icecast2
+      - /etc/localtime:/etc/localtime:ro
+      - "${ICECAST_CONFIG_FILE}:/etc/icecast2/icecast.xml"
+
+networks:
+  antentafm:
