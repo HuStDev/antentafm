@@ -1,5 +1,6 @@
 import * as RocketChat from './rockat_chat.js'
 import * as Global from './globals.js';
+import { rocket_chat_url } from './config.js';
 
 export class Session {
     static login(request, response) {
@@ -33,5 +34,16 @@ export class Session {
 
             response.status(data[Global.key_status]).send(data);
         })
+    }
+
+    static use(request, response, next) {
+        response.set('Access-Control-Allow-Origin', rocket_chat_url);
+        response.set('Access-Control-Allow-Credentials', 'true');
+      
+        for (const [key, value] of Object.entries(request.body)) {
+            request.query[key] = value;
+        }
+
+        next();
     }
 }

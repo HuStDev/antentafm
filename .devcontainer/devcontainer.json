@@ -13,6 +13,4 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/usr/workspace,type=bind,consistency=cached"
   ]
-
-  //"forwardPorts": [3000,7000]
 }
