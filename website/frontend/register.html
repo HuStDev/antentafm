@@ -26,14 +26,21 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="username">Nutzer:</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" placeholder="Nutzer" name="username" id="form_username" aria-describedby="form_username_helper" required data-bs-toggle="tooltip" data-bs-placement="top" title="Nutzername"> 
+                <input type="text" class="form-control" placeholder="Name des neuen Nutzers" name="username" id="form_username" required data-bs-toggle="tooltip" data-bs-placement="top" title="Name des neuen Nutzers"> 
             </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="password">Passwort:</label>
             <div class="col-sm-10">
-                <input type="password" class="form-control" placeholder="Passwort" name="password" id="form_password" aria-describedby="form_password_helper" required data-bs-toggle="tooltip" data-bs-placement="top" title="Passwort für Nutzer / neues PW bei PW-Wechsel">
+                <input type="password" class="form-control" placeholder="Passwort für neuen Nutzer" name="password" id="form_password" required data-bs-toggle="tooltip" data-bs-placement="top" title="Passwort für neuen Nutzer">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="validation">Validierungsfrage:</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" placeholder="Nutzerkürzel des Hosts?" name="validation" id="form_validation" required data-bs-toggle="tooltip" data-bs-placement="top" title="Nutzerkürzel des Hosts?">
             </div>
         </div>
 
@@ -42,7 +49,7 @@
             <p></p>
             <p></p>
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn-default" id="button_submit" aria-describedby="button_submit_helper">Login</button>
+                <button type="submit" class="btn-default" id="button_submit" aria-describedby="button_submit_helper">Registrierung</button>
             </div>
         </div>
 
@@ -54,38 +61,27 @@
 
         <div class="form-group">
             <div class="col-sm-10">
-                <a href="/register" class="link-secondary">Registrierung</a>
+                <a href="/login" class="link-secondary">Login</a>
             </div>
         </div>
     </form>
 
     <script>
         // Identifier for form elements
-        const id_form_password = "form_password";
-        const id_form_username = "form_username";
-        const id_button_submit = "button_submit";
-
-        function set_default_form_values() {
-            const user = localStorage.getItem('afm_user');
-            if (user) {
-                document.getElementById(id_form_username).value = user;
-            } 
-        }
-
-        function post_login_data() {
-            localStorage.setItem('afm_user', document.getElementById(id_form_username).value);
-
-            login(
-                document.getElementById(id_form_username).value,
-                document.getElementById(id_form_password).value
-            );
-        }
-
-        set_default_form_values();
+        const id_form_password   = "form_password";
+        const id_form_username   = "form_username";
+        const id_form_validation = "form_validation";
 
         $("#form_post_id").submit(function(e)
         {
-            post_login_data();
+            localStorage.setItem('afm_user', document.getElementById(id_form_username).value);
+
+            register(
+                document.getElementById(id_form_username).value,
+                document.getElementById(id_form_password).value,
+                document.getElementById(id_form_validation).value
+            );
+
             e.preventDefault(); //STOP default action
         });
     </script>

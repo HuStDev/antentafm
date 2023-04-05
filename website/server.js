@@ -31,6 +31,15 @@ app.get('/login', function (request, response) {
   fs.createReadStream('frontend/login.html').pipe(response);
 });
 
+app.post('/register', function (request, response) {
+  Session.register(request, response);
+});
+
+app.get('/register', function (request, response) {
+  response.set('Content-Type', 'text/html');
+  fs.createReadStream('frontend/register.html').pipe(response);
+});
+
 app.post('/sso', function (request, response) {
   Session.sso(request, response);
 });

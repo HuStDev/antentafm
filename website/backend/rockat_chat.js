@@ -5,6 +5,7 @@ import { rocket_chat_url } from './config.js';
 import { secret_key } from './config.js';
 import { Errors } from './errors.js';
 import * as Global from './globals.js';
+import * as Config from './config.js';
 
 const timeout = 2500; // 2.5s
 
@@ -97,8 +98,39 @@ export async function login(username, password) {
 
         return result;
     } catch(error) {
-        console.log(error.message);
+        console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);
         throw Errors.LOGIN_INVALID_CREDENTIALS;
+    }
+}
+
+export async function register(user, password, validation) {
+    if (!(String(validation).toLowerCase() == String(Config.validation).toLocaleLowerCase())) {
+        throw Errors.REGISTER_INVALID_VALIDATION;
+    }
+
+    try {
+        let response = await axios.post(
+            rocket_chat_url + '/api/v1/users.register',
+            {
+                username: user,
+                pass: password,
+                name: user,
+                email: user + '@antenta.fm'
+            },
+            {
+                timeout: timeout
+            }
+        );
+
+        if (response.status != 200) {
+            console.log(response.status, reponse.statusText);
+            throw Errors.REGISTER_FAILED
+        }
+
+        return;
+    } catch(error) {
+        console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);
+        throw Errors.REGISTER_FAILED;
     }
 }
 
@@ -130,7 +162,7 @@ export async function verify(token) {
 
         return result;
     } catch(error) {
-        console.log(error.message);
+        console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);
         throw Errors.LOGIN_UNEXPECTED_ERROR;
     }
 }

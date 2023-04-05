@@ -20,6 +20,22 @@ export class Session {
         })
     }
 
+    static register(request, response) {
+        RocketChat.register(
+            request.body[Global.key_user_name],
+            request.body[Global.key_user_password],
+            request.body[Global.key_user_validation]
+        ).then(function () {
+            response.sendStatus(200);
+        }).catch(function(error) {
+            let data = {};
+            data[Global.key_message] = error.key;
+            data[Global.key_status] = 401;
+
+            response.status(data[Global.key_status]).send(data);
+        })
+    }
+
     static sso(request, response) {     
         RocketChat.verify(
             request.query[Global.key_auth_token]
