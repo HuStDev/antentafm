@@ -11,6 +11,8 @@ app.use('/scripts/functions.js', express.static('frontend/functions.js'))
 import { Session } from './backend/session.js';
 import { Radio } from './backend/radio.js';
 
+const radio = new Radio();
+
 const server =  app.listen(7000, () => {
     console.log(`Express running → PORT ${server.address().port}`);
   });
@@ -39,7 +41,7 @@ app.get('/', function (request, response) {
 });
 
 app.post('/radio', function (request, response) {
-  Radio.handle(request, response);
+  radio.handle(request, response);
 });
 
 app.post('')

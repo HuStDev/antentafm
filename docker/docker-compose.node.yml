@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   nodeserver:
-    image: hust/node:0.1.0
+    image: hust/node:0.2.0
     restart: on-failure
     networks:
       - "antentafm"
@@ -22,6 +22,7 @@ services:
       - "9229:9229"
     volumes:
       - "${NODE_APP_HOST_DIR}:/usr/app"
+      - "${RECORDINGS_DIR}:/usr/recordings"
 
 networks:
   antentafm:

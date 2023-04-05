@@ -28,11 +28,12 @@
                 "docker",
                 "build",
                 "-t",
-                "hust/node:0.1.0",
+                "hust/node:0.2.0",
                 "."
             ],
             "label": "Docker build hust node",
             "problemMatcher": []
         }
+        
     ]
   }
