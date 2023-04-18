@@ -1,6 +1,7 @@
 const key_user_name = "afm_user_name"
 const key_user_id = "afm_user_id"
 const key_user_password = "afm_user_password"
+const key_user_password_new = "afm_user_password_new"
 const key_user_validation = "afm_validation"
 const key_auth_token = "afm_auth_token"
 const key_message = "afm_message"
@@ -131,26 +132,53 @@ function register (username, password, validation) {
     data[key_user_password] = password;
     data[key_user_validation] = validation;
 
+    localStorage.removeItem(key_auth_token);
+
     $.ajax(
         {
             url : window.location.origin + '/register',
             type : "POST",
             data : data,
             success: function(response) {
-                // In case of valid response, store auth token in session data
-                localStorage.setItem(key_auth_token, response[key_auth_token]);
+                if (key_message in response.responseJSON) {
+                    alert(response.responseJSON[key_message]);
+                }
 
-                let query = [];
-                query[key_auth_token] = response[key_auth_token];
-                const href = window.location.origin + get_if_in_query(query_from_string(window.location.href), key_origin, "/") + query_to_string(query);
                 window.location.href = "/login";
             },
-            error : function(response_header) {
-                // In case of error, remove auth token from session storage, post error and reload form
-                localStorage.removeItem(key_auth_token);
-                alert(response_header.responseJSON[key_message]);
+            error : function(response) {
+                alert(response.responseJSON[key_message]);
 
                 window.location.href = "/register";
+            }
+        }
+    );
+}
+
+function change_password (username, password_old, password_new) {
+    let data = {};
+    data[key_user_name] = username;
+    data[key_user_password] = password_old;
+    data[key_user_password_new] = password_new;
+
+    localStorage.removeItem(key_auth_token);
+
+    $.ajax(
+        {
+            url : window.location.origin + '/password',
+            type : "POST",
+            data : data,
+            success: function(response) {
+                if (key_message in response.responseJSON) {
+                    alert(response.responseJSON[key_message]);
+                }
+
+                window.location.href = "/login";
+            },
+            error : function(response) {               
+                alert(response.responseJSON[key_message]);
+
+                window.location.href = "/password";
             }
         }
     );

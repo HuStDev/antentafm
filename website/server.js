@@ -40,6 +40,15 @@ app.get('/register', function (request, response) {
   fs.createReadStream('frontend/register.html').pipe(response);
 });
 
+app.post('/password', function (request, response) {
+  Session.change_password(request, response);
+});
+
+app.get('/password', function (request, response) {
+  response.set('Content-Type', 'text/html');
+  fs.createReadStream('frontend/password.html').pipe(response);
+});
+
 app.post('/sso', function (request, response) {
   Session.sso(request, response);
 });

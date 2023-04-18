@@ -4,33 +4,34 @@ import jsonwebtoken from 'jsonwebtoken';
 import { rocket_chat_url } from './config.js';
 import { secret_key } from './config.js';
 import { Errors } from './errors.js';
+import { Utils } from './utils.js';
 import * as Global from './globals.js';
 import * as Config from './config.js';
 
 const timeout = 2500; // 2.5s
 
-function generate_auth_header(payload) {
+function generate_header() {
     const header = {
         headers:{
-            'X-Auth-Token': payload[Global.key_auth_token],
-            'X-User-Id': payload[Global.key_user_id], 
-            'Content-type': 'application/json',
-            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, X-User-Id, X-Auth-Token',
-        }, 
+            'Content-type': 'application/json'
+        },
         timeout: timeout
     };
 
     return header;
 }
 
-function generate_header() {
-    const header = {
-        headers:{
-            'Content-type': 'application/json',
-            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, X-User-Id, X-Auth-Token',
-        },
-        timeout: timeout
-    };
+function update_header(header, key, value) {
+    header["headers"][key] = value;
+    return header;
+}
+
+function generate_auth_header(payload) {
+    let header = generate_header();
+
+    header = update_header(header, "X-Auth-Token", payload[Global.key_auth_token]);
+    header = update_header(header, "X-User-Id", payload[Global.key_user_id]);
+    //header = update_header(header, "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, X-User-Id, X-Auth-Token");
 
     return header;
 }
@@ -83,9 +84,7 @@ export async function login(username, password) {
                 user: username,
                 password: password
             },
-            {
-                timeout: timeout
-            }
+            //generate_header()
         );
 
         if (response.status != 200) {
@@ -98,7 +97,7 @@ export async function login(username, password) {
 
         return result;
     } catch(error) {
-        console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);
+        Utils.log_error(error);
         throw Errors.LOGIN_INVALID_CREDENTIALS;
     }
 }
@@ -117,9 +116,7 @@ export async function register(user, password, validation) {
                 name: user,
                 email: user + '@antenta.fm'
             },
-            {
-                timeout: timeout
-            }
+            generate_header()
         );
 
         if (response.status != 200) {
@@ -129,8 +126,48 @@ export async function register(user, password, validation) {
 
         return;
     } catch(error) {
-        console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);
+        Utils.log_error(error);
         throw Errors.REGISTER_FAILED;
+    }
+}
+
+export async function change_password(session_token, current_password, new_password) {
+    let payload = null;
+
+    try {
+        payload = decode_token(session_token);
+    } catch(error) {
+        Utils.log_error(error);
+        throw Errors.LOGIN_INVALID_SESSION_TOKEN;
+    }
+
+    if (payload == null) {
+        throw Errors.LOGIN_SESSION_EXPIRED;
+    }
+
+    try {
+        const data = {
+            data: {
+                currentPassword : Utils.encode_sha_256(current_password),
+                newPassword: new_password,
+            }
+        };
+
+        let response = await axios.post(
+            rocket_chat_url + '/api/v1/users.updateOwnBasicInfo',
+            data,
+            generate_auth_header(payload)
+        );
+
+        if (response.status != 200) {
+            console.log(response.status, reponse.statusText);
+            throw Errors.UPDATE_FAILED;
+        }
+
+        return;
+    } catch(error) {
+        Utils.log_error(error);
+        throw Errors.UPDATE_FAILED;
     }
 }
 
@@ -140,7 +177,7 @@ export async function verify(token) {
     try {
         payload = decode_token(token);
     } catch(error) {
-        console.log(error.message);
+        Utils.log_error(error);
         throw Errors.LOGIN_INVALID_SESSION_TOKEN;
     }
 
@@ -154,7 +191,7 @@ export async function verify(token) {
             {
                 resume: payload[Global.key_auth_token]
             },
-            generate_header()
+            generate_auth_header(payload)
         );
 
         let result = {};
@@ -162,7 +199,7 @@ export async function verify(token) {
 
         return result;
     } catch(error) {
-        console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);
+        Utils.log_error(error);
         throw Errors.LOGIN_UNEXPECTED_ERROR;
     }
 }

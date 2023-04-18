@@ -1,4 +1,14 @@
+import crypto from "crypto"
+
 export class Utils {
+
+    static log_error(error) {
+        try {
+            console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);
+        } catch(e) {
+            console.log(error.message);
+        }
+    }
     
     static query_from_string(text) {
         let query = {};
@@ -47,5 +57,10 @@ export class Utils {
         text = String(text);
         while (text.length < num_digits) text = "0" + text;
         return text;
+    }
+
+    static encode_sha_256(value) {
+        const hash = crypto.createHash('sha256').update(value).digest('hex');
+        return hash;
     }
 }

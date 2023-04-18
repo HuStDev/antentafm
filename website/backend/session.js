@@ -8,14 +8,11 @@ export class Session {
             request.body[Global.key_user_name],
             request.body[Global.key_user_password]
         ).then(function (data) {
-            data[Global.key_status] = 200;
+            data = Session.update_response_data(data, 200, "LOGIN_SUCCESSFUL");
             response.status(data[Global.key_status]).send(data);
         }).catch(function(error) {
-            let data = {};
+            let data = Session.prepare_response_data(401, error.key);
             data[Global.key_auth_token] = null;
-            data[Global.key_message] = error.key;
-            data[Global.key_status] = 401;
-
             response.status(data[Global.key_status]).send(data);
         })
     }
@@ -26,12 +23,33 @@ export class Session {
             request.body[Global.key_user_password],
             request.body[Global.key_user_validation]
         ).then(function () {
-            response.sendStatus(200);
+            const data = Session.prepare_response_data(200, "REGISTRATION_SUCCESSFUL");
+            response.status(data[Global.key_status]).send(data);
         }).catch(function(error) {
-            let data = {};
-            data[Global.key_message] = error.key;
-            data[Global.key_status] = 401;
+            const data = Session.prepare_response_data(401, error.key);
+            response.status(data[Global.key_status]).send(data);
+        })
+    }
 
+    static change_password(request, response) {        
+        RocketChat.login(
+            request.body[Global.key_user_name],
+            request.body[Global.key_user_password]
+        ).then(function (data) {
+            RocketChat.change_password(
+                data[Global.key_auth_token],
+                request.body[Global.key_user_password],
+                request.body[Global.key_user_password_new]
+            ).then(function () {
+                const data = Session.prepare_response_data(200, "PASSWORD_CHANGE_SUCCESSFUL");
+                response.status(data[Global.key_status]).send(data);
+            }).catch(function(error) {
+                const data = Session.prepare_response_data(401, error.key);
+                response.status(data[Global.key_status]).send(data);
+            })
+        }).catch(function(error) {
+            let data = Session.prepare_response_data(401, error.key);
+            data[Global.key_auth_token] = null;
             response.status(data[Global.key_status]).send(data);
         })
     }
@@ -40,13 +58,12 @@ export class Session {
         RocketChat.verify(
             request.query[Global.key_auth_token]
         ).then(function (data) {
-            data[Global.key_status] = 200;
+            data = Session.update_response_data(data, 200, "SSO_LOGIN_SUCCESSFUL");
+
             response.status(data[Global.key_status]).send(data);
         }).catch(function(error) {
-            let data = {};
+            let data = Session.prepare_response_data(401, error.key);
             data[Global.key_auth_token] = null;
-            data[Global.key_message] = error.key;
-            data[Global.key_status] = 401;
 
             response.status(data[Global.key_status]).send(data);
         })
@@ -61,5 +78,21 @@ export class Session {
         }
 
         next();
+    }
+
+    static prepare_response_data(status, message="") {
+        let data = {}
+
+        data[Global.key_message] = message;
+        data[Global.key_status] = status;
+
+        return data;
+    }
+
+    static update_response_data(data, status, message="") {
+        data[Global.key_message] = message;
+        data[Global.key_status] = status;
+
+        return data;
     }
 }

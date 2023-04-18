@@ -1,6 +1,7 @@
 export const key_user_name = "afm_user_name"
 export const key_user_id = "afm_user_id"
 export const key_user_password = "afm_user_password"
+export const key_user_password_new = "afm_user_password_new"
 export const key_user_validation = "afm_validation"
 export const key_auth_token = "afm_auth_token"
 export const key_message = "afm_message"
