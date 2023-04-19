@@ -7,6 +7,7 @@ app.use(express.json())
 app.use(express.urlencoded())
 
 app.use('/scripts/functions.js', express.static('frontend/functions.js'))
+app.use('/scripts/config.js', express.static('frontend/config.js'))
 
 import { Session } from './backend/session.js';
 import { Radio } from './backend/radio.js';
@@ -29,6 +30,10 @@ app.post('/login', function (request, response) {
 app.get('/login', function (request, response) {
   response.set('Content-Type', 'text/html');
   fs.createReadStream('frontend/login.html').pipe(response);
+});
+
+app.post('/logout', function (request, response) {
+  Session.logout(request, response);
 });
 
 app.post('/register', function (request, response) {

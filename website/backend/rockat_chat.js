@@ -203,3 +203,33 @@ export async function verify(token) {
         throw Errors.LOGIN_UNEXPECTED_ERROR;
     }
 }
+
+export async function logout(token) {
+    let payload = null;
+
+    try {
+        payload = decode_token(token);
+    } catch(error) {
+        Utils.log_error(error);
+        throw Errors.LOGIN_INVALID_SESSION_TOKEN;
+    }
+
+    if (payload == null) {
+        throw Errors.LOGIN_SESSION_EXPIRED;
+    }
+
+    try {
+        const response = await axios.post(
+            rocket_chat_url + '/api/v1/logout',
+            {},
+            generate_auth_header(payload)
+        );
+
+        let result = {};
+
+        return result;
+    } catch(error) {
+        Utils.log_error(error);
+        throw Errors.LOGOUT_UNEXPECTED_ERROR;
+    }
+}

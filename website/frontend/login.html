@@ -12,9 +12,9 @@
 
     <script>
         // Hide full HTML path in URL
-        jQuery(document).ready(function($) {
-            window.history.replaceState({}, document.title, "/");
-        });
+        //jQuery(document).ready(function($) {
+        //    window.history.replaceState({}, document.title, "/");
+        //});
     </script>
 </head>
 <body>
@@ -66,14 +66,14 @@
         const id_button_submit = "button_submit";
 
         function set_default_form_values() {
-            const user = localStorage.getItem('afm_user');
+            const user = localStorage.getItem(key_user_name);
             if (!(user===null)) {
                 document.getElementById(id_form_username).value = user;
             } 
         }
 
         function post_login_data() {
-            localStorage.setItem('afm_user', document.getElementById(id_form_username).value);
+            localStorage.setItem(key_user_name, document.getElementById(id_form_username).value);
 
             login(
                 document.getElementById(id_form_username).value,

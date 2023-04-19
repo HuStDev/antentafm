@@ -67,13 +67,13 @@ function sso() {
     data[key_auth_token] = token;
     $.ajax(
         {
-            url : window.location.origin + '/sso',
-            type : "POST",
-            data : data,
-            success: function(response) {
+            url: window.location.origin + '/sso',
+            type: "POST",
+            data: data,
+            success: function (response) {
                 localStorage.setItem(key_auth_token, response[key_auth_token]);
             },
-            error : function(response_header) {
+            error: function (response_header) {
                 localStorage.removeItem(key_auth_token);
                 alert(response_header.responseJSON[key_message]);
 
@@ -88,17 +88,38 @@ function sso() {
     );
 }
 
-function login (username, password) {
+function logout() {
+    let data = {};
+    data[key_auth_token] = localStorage.getItem(key_auth_token);
+
+    $.ajax(
+        {
+            url: window.location.origin + '/logout',
+            type: "POST",
+            data: data,
+            success: function (response) {
+                localStorage.removeItem(key_auth_token);
+                window.location.href = "/";
+            },
+            error: function (response_header) {
+                localStorage.removeItem(key_auth_token);
+                window.location.href = "/";
+            }
+        }
+    );
+}
+
+function login(username, password) {
     let data = {};
     data[key_user_name] = username;
     data[key_user_password] = password;
 
     $.ajax(
         {
-            url : window.location.origin + '/login',
-            type : "POST",
-            data : data,
-            success: function(response) {
+            url: window.location.origin + '/login',
+            type: "POST",
+            data: data,
+            success: function (response) {
                 // In case of valid response, store auth token in session data
                 localStorage.setItem(key_auth_token, response[key_auth_token]);
 
@@ -107,11 +128,11 @@ function login (username, password) {
                 const href = window.location.origin + get_if_in_query(query_from_string(window.location.href), key_origin, "/") + query_to_string(query);
                 window.location.href = href;
             },
-            error : function(response_header) {
+            error: function (response_header) {
                 // In case of error, remove auth token from session storage, post error and reload form
                 localStorage.removeItem(key_auth_token);
                 alert(response_header.responseJSON[key_message]);
-                
+
                 let query = [];
                 query[key_origin] = get_if_in_query(
                     query_from_string(window.location.href),
@@ -126,7 +147,7 @@ function login (username, password) {
     );
 }
 
-function register (username, password, validation) {
+function register(username, password, validation) {
     let data = {};
     data[key_user_name] = username;
     data[key_user_password] = password;
@@ -136,17 +157,17 @@ function register (username, password, validation) {
 
     $.ajax(
         {
-            url : window.location.origin + '/register',
-            type : "POST",
-            data : data,
-            success: function(response) {
+            url: window.location.origin + '/register',
+            type: "POST",
+            data: data,
+            success: function (response) {
                 if (key_message in response.responseJSON) {
                     alert(response.responseJSON[key_message]);
                 }
 
                 window.location.href = "/login";
             },
-            error : function(response) {
+            error: function (response) {
                 alert(response.responseJSON[key_message]);
 
                 window.location.href = "/register";
@@ -155,7 +176,7 @@ function register (username, password, validation) {
     );
 }
 
-function change_password (username, password_old, password_new) {
+function change_password(username, password_old, password_new) {
     let data = {};
     data[key_user_name] = username;
     data[key_user_password] = password_old;
@@ -165,17 +186,17 @@ function change_password (username, password_old, password_new) {
 
     $.ajax(
         {
-            url : window.location.origin + '/password',
-            type : "POST",
-            data : data,
-            success: function(response) {
+            url: window.location.origin + '/password',
+            type: "POST",
+            data: data,
+            success: function (response) {
                 if (key_message in response.responseJSON) {
                     alert(response.responseJSON[key_message]);
                 }
 
                 window.location.href = "/login";
             },
-            error : function(response) {               
+            error: function (response) {
                 alert(response.responseJSON[key_message]);
 
                 window.location.href = "/password";

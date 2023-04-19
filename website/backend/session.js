@@ -17,6 +17,18 @@ export class Session {
         })
     }
 
+    static logout(request, response) {
+        RocketChat.logout(
+            request.body[Global.key_auth_token]
+        ).then(function () {
+            const data = Session.prepare_response_data(200, "LOGOUT_SUCCESSFUL");
+            response.status(data[Global.key_status]).send(data);
+        }).catch(function(error) {
+            const data = Session.prepare_response_data(401, error.key);
+            response.status(data[Global.key_status]).send(data);
+        })
+    }
+
     static register(request, response) {
         RocketChat.register(
             request.body[Global.key_user_name],
