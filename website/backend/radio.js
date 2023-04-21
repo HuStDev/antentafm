@@ -2,6 +2,8 @@ import * as Global from './globals.js';
 import * as Config from './config.js';
 import * as RocketChat from './rockat_chat.js'
 
+import { HtmlBuilder } from './html_builder.js';
+
 import { Utils } from './utils.js'
 import { exec } from 'child_process';
 
@@ -9,6 +11,7 @@ export class Radio {
 
     constructor() {
         this.record_process = null;
+        this.recordings_dir = Config.recordings_fs_dir;
     }
 
     handle(request, response) {
@@ -104,7 +107,7 @@ export class Radio {
 
             response.sendStatus(200);
 
-            const output_file = "/usr/recordings/antentafm_" + Utils.get_date_and_time_as_string() + ".ogg ";
+            const output_file = this.recordings_dir + "/antentafm_" + Utils.get_date_and_time_as_string() + ".ogg ";
             const command = "curl --output " + output_file + Config.icecast_stream_url + "?" + Global.key_auth_token + "=" + Config.secret_key;
             
             this.record_process = exec(command);
@@ -133,6 +136,9 @@ export class Radio {
         }
 
         this.record_process = null;
+
+        const builder = new HtmlBuilder();
+        builder.generate(this.recordings_dir);
 
         return response.sendStatus(200);
     }

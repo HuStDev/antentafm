@@ -3,4 +3,5 @@ export const icecast_url = "http://172.18.0.1:8000"
 export const icecast_stream_url = "http://172.18.0.1:8000/live"
 export const secret_key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ012345"
 export const validation = "ASD"
+export const recordings_dir="/home/hust/antentafm/recordings"
 

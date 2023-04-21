@@ -1,6 +1,8 @@
 import fs from 'fs';
 import express from 'express';
 
+import * as Config from './backend/config.js';
+
 const app = express();
 
 app.use(express.json())
@@ -8,6 +10,8 @@ app.use(express.urlencoded())
 
 app.use('/scripts/functions.js', express.static('frontend/functions.js'))
 app.use('/scripts/config.js', express.static('frontend/config.js'))
+app.use(Config.recordings_web_dir, express.static(Config.recordings_fs_dir))
+app.use('/template/recordings.html', express.static('frontend/recordings.html'))
 
 import { Session } from './backend/session.js';
 import { Radio } from './backend/radio.js';
