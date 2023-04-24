@@ -1,4 +1,4 @@
-FROM node:19.2.0
+FROM node:19.9.0
 
 # WORKDIR is required to set since v15
 # Otherwise error npm ERR! Tracker "idealTree" already exists will be raised

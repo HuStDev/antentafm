@@ -2,8 +2,8 @@ version: "3.7"
 
 services:
   nodeserver:
-    image: hust/node:0.2.0
-    restart: on-failure
+    image: hust/node:1.0.0
+    restart: ${DOCKER_RESTART_POLICY}
     networks:
       - "antentafm"
     #labels:
