@@ -101,14 +101,12 @@
     <h3>Live</h3>
     
     <!-- required workaround for chrome, otherwise autoplay of dynamic create audio elements won't work -->
-    <!--<iframe src="scripts/dummy.mp3" allow="autoplay" style="display:none" id="id_live_audioframe">
-    </iframe>
+    <iframe src="scripts/dummy.mp3" allow="autoplay" style="display:none" id="id_live_audioframe"></iframe>
 
-    <script src="scripts/icecast_stats.js" type="text/javascript"></script>
     <script>
-        setInterval(update_icecast_stats, 10000); 
-        update_icecast_stats();
-    </script>-->
+        setInterval(update_live_section, 10000); 
+        update_live_section();
+    </script>
 </div>
 
     

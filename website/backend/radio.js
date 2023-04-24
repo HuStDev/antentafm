@@ -12,6 +12,9 @@ export class Radio {
     constructor() {
         this.record_process = null;
         this.recordings_dir = Config.recordings_fs_dir;
+        this.stream_started = Utils.date_utc_in_s();
+        this.stream_stopped = Utils.date_utc_in_s();
+        this.is_stream_active = false;
     }
 
     handle(request, response) {
@@ -30,6 +33,15 @@ export class Radio {
         } else {
             return response.sendStatus(401);
         }
+    }
+
+    info(response) {
+        let data = {};
+        data[Global.key_stream_started] = this.stream_started;
+        data[Global.key_stream_stopped] = this.stream_stopped;
+        data[Global.key_is_stream_active] = this.is_stream_active;
+
+        response.status(200).send(data);
     }
 
     #login_user(request, response) {
@@ -107,6 +119,9 @@ export class Radio {
 
             response.sendStatus(200);
 
+            this.stream_started = Utils.date_utc_in_s();
+            this.is_stream_active = true;
+
             const output_file = this.recordings_dir + "/antentafm_" + Utils.get_date_and_time_as_string() + ".ogg ";
             const command = "curl --output " + output_file + Config.icecast_stream_url + "?" + Global.key_auth_token + "=" + Config.secret_key;
             
@@ -131,14 +146,17 @@ export class Radio {
                 this.record_process.unref();
                 console.log("stop recording stream");
             }
+
+            const builder = new HtmlBuilder();
+            builder.generate(this.recordings_dir);
+    
+            this.stream_stopped = Utils.date_utc_in_s();
+            this.is_stream_active = false;
         } catch(error) {
             console.log(error);
         }
 
         this.record_process = null;
-
-        const builder = new HtmlBuilder();
-        builder.generate(this.recordings_dir);
 
         return response.sendStatus(200);
     }

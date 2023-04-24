@@ -2,6 +2,10 @@ import crypto from "crypto"
 
 export class Utils {
 
+    static date_utc_in_s() {
+        return Math.floor(Date.now() / 1000);
+    }
+
     static log_error(error) {
         try {
             console.log(error.message + " - " + error.response.status + " - " + error.response.statusText);

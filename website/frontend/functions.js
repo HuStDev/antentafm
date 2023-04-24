@@ -7,6 +7,10 @@ const key_auth_token = "afm_auth_token"
 const key_message = "afm_message"
 const key_status = "afm_status"
 const key_origin = "afm_origin"
+const key_stream_audio_level = "afm_stream_audio_level"
+const key_stream_started = "afm_stream_started";
+const key_stream_stopped = "afm_stream_stopped";
+const key_is_stream_active = "afm_stream_active";
 
 function query_from_string(text) {
     let query = {};
@@ -203,4 +207,95 @@ function change_password(username, password_old, password_new) {
             }
         }
     );
+}
+
+function update_live_section() {
+    const id_root_element = "id_live";
+    const stream_exists = exists_stream_audio_element(id_root_element);
+
+    $.ajax(
+        {
+            url: window.location.origin + '/radio_info',
+            type: "POST",
+            data: {},
+            success: function (response) {               
+                if (stream_exists == true) {
+                    if (response[key_is_stream_active] == true) {
+                        const time_diff = response[key_stream_started] - response[key_stream_stopped];
+                        if (time_diff < (60 * 15)) {
+                            const stream_last_time_stopped = Number(localStorage.getItem(key_stream_stopped));
+                            if (stream_last_time_stopped != response[key_stream_stopped]) {
+                                remove_stream_audio_element(id_root_element);
+                                localStorage.setItem(key_stream_stopped, response[key_stream_stopped]);
+                            }
+                        }
+                    }
+                } else {
+                    if (response[key_is_stream_active] == true) {
+                        add_stream_audio_element(id_root_element);
+
+                        if (localStorage.getItem(key_stream_stopped) === null) {
+                            localStorage.setItem(key_stream_stopped, response[key_stream_stopped]);
+                        }
+                    }
+                }
+            },
+            error: function (response) {
+                if (stream_exists == true) {
+                    remove_stream_audio_element(id_root_element);
+                }
+            }
+        }
+    );
+}
+
+function add_stream_audio_element(id_root_element, stream_url) {
+    var sound = document.createElement("audio");
+    sound.id       = 'id_stream_live';
+    sound.controls = 'controls';
+    sound.src      = stream_url + "?" + key_auth_token + "=" + localStorage.getItem(key_auth_token);
+    sound.type     = 'audio/ogg';
+    sound.preload  = 'auto';
+    sound.autoplay  = 'autoplay';
+    sound.className = 'rounded-lg';
+    sound.style = 'background-color:#dfdef6;';
+
+    const volume_level = localStorage.getItem(key_stream_audio_level);
+    if (volume_level === null) {
+        sound.volume = 0.5;
+    } else {
+        sound.volume = volume_level;
+    }
+
+    sound.onvolumechange = function() {
+        localStorage.setItem(key_stream_audio_level, sound.volume)
+    };
+
+    document.getElementById(id_root_element).appendChild(sound);
+}
+
+function remove_stream_audio_element(id_root_element) {
+    var element = document.getElementById(id_root_element);
+    var children = element.children;
+
+    for(var i = 0; i < children.length; i++){
+        var child = children[i];
+        if (child.id == 'id_stream_live') {
+            document.getElementById(id_root_element).removeChild(child);
+        }
+    }
+}
+
+function exists_stream_audio_element(id_root_element) {
+    var element = document.getElementById(id_root_element);
+    var children = element.children;
+
+    for(var i = 0; i < children.length; i++){
+        var child = children[i];
+        if (child.id == 'id_stream_live') {
+            return true;
+        }
+    }
+
+    return false;
 }

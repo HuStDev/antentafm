@@ -49,7 +49,7 @@ function sign_token(data) {
         secret_key,
         {
             algorithm: 'HS256',
-            expiresIn: Math.floor(Date.now() / 1000) + (60 * 15)
+            expiresIn: Utils.date_utc_in_s() + (60 * 15)
         }
     );
 
@@ -65,7 +65,7 @@ function decode_token(web_token) {
         }
     );
 
-    const date_expired = Math.floor(Date.now() / 1000);
+    const date_expired = Utils.date_utc_in_s();
     if (auth_token['iat'] > date_expired) {
         return null;
     }

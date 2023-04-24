@@ -9,3 +9,7 @@ export const key_status = "afm_status"
 export const key_origin = "afm_origin"
 export const key_radio_user = "user"
 export const key_radio_password = "pass"
+export const key_stream_audio_level = "afm_stream_audio_level"
+export const key_stream_started = "afm_stream_started";
+export const key_stream_stopped = "afm_stream_stopped";
+export const key_is_stream_active = "afm_stream_active";
