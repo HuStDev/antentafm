@@ -1,5 +1,8 @@
 version: "3.7"
 
+volumes:
+  node_recordings: { driver: local }
+
 services:
   nodeserver:
     image: hust/node:1.0.0
@@ -21,8 +24,8 @@ services:
       - "7000:7000"
       - "9229:9229"
     volumes:
-      - "${NODE_APP_HOST_DIR}:/usr/app"
-      - "${RECORDINGS_DIR}:/usr/workspace/website/recordings"
+      - "${NODE_APP_HOST_DIR}:/usr/app/website"
+      - "node_recordings:/usr/app/website/recordings"
 
 networks:
   antentafm:

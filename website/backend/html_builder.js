@@ -12,7 +12,7 @@ export class HtmlBuilder {
     generate(recordings_dir) {
         this.#delete_too_old_recordings(recordings_dir);
 
-        const path_to_html_file = "/usr/workspace/website/frontend/recordings.html";
+        const path_to_html_file = "/usr/app/website/frontend/recordings.html";
         this.#write_html(path_to_html_file, recordings_dir);
     }
 

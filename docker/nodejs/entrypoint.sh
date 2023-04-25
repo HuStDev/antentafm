@@ -1,5 +1,5 @@
 #!/bin/bash
-pushd /usr/app
+pushd /usr/app/website
 npm install
 
 if [[ -z "${NPM_SKIP_START}" ]]; then

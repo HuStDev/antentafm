@@ -1,5 +1,6 @@
 {
   "name": "antentafm",
+  "service": "nodeserver",
 
   "dockerComposeFile": [
     "${localWorkspaceFolder}/docker/docker-compose.rocketchat.yml",
@@ -7,10 +8,20 @@
     "${localWorkspaceFolder}/docker/docker-compose.icecast.yml"
   ],
 
-  "service": "nodeserver",
-
-  "workspaceFolder": "/usr/workspace",
+  "workspaceFolder": "/usr/app",
   "mounts": [
-    "source=${localWorkspaceFolder},target=/usr/workspace,type=bind,consistency=cached"
-  ]
+    "source=${localWorkspaceFolder},target=/usr/app,type=bind,consistency=cached"
+  ],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "mhutchie.git-graph",
+        "GitHub.vscode-pull-request-github",
+        "ms-vscode-remote.remote-containers"
+      ]
+    }
+  }
 }
+
+

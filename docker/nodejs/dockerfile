@@ -6,7 +6,9 @@ WORKDIR /usr/app
 EXPOSE 7000
 EXPOSE 9229
 
-VOLUME ["/usr/recordings"]
+VOLUME ["/usr/app"]
+VOLUME ["/usr/app/website"]
+VOLUME ["/usr/app/website/recordings"]
 
 COPY entrypoint.sh /usr/entrypoint.sh
 RUN ["chmod", "+x", "/usr/entrypoint.sh"]

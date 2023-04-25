@@ -33,6 +33,14 @@
             ],
             "label": "Docker build hust node",
             "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "command": [
+                "./docker/configure_environment.sh",
+            ],
+            "label": "Configure dev environment",
+            "problemMatcher": []
         }
     ]
   }
