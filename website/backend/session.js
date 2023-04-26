@@ -81,6 +81,19 @@ export class Session {
         })
     }
 
+    static chat_token(request, response) {
+        RocketChat.decode_to_chat_token(
+            request.query[Global.key_auth_token]
+        ).then(function (data) {
+            response.status(200).send(data);
+        }).catch(function(error) {
+            let data = Session.prepare_response_data(401, error.key);
+            data[Global.key_auth_token] = null;
+
+            response.status(data[Global.key_status]).send(data);
+        })
+    }
+
     static use(request, response, next) {
         response.set('Access-Control-Allow-Origin', rocket_chat_url);
         response.set('Access-Control-Allow-Credentials', 'true');

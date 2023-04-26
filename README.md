@@ -25,3 +25,16 @@ First you have to run configuration of icecast.
 Run the following script to configure the `.env` file. This file will be save in `<workspace>\docker`.
 
 ifconfig -> docker
+
+## Rocket.Chat configuration
+
+Settings -> Accounts -> Iframe
+Enabled
+Iframe URL - domain:7000/chat domain=docker-ip
+API URL -> domain:7000/login
+
+Settings -> General ->
+Restrict access inside any Iframe
+
+Settings -> General -> Iframe Integration
+Enable Receive

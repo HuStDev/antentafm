@@ -11,6 +11,7 @@ const key_stream_audio_level = "afm_stream_audio_level"
 const key_stream_started = "afm_stream_started";
 const key_stream_stopped = "afm_stream_stopped";
 const key_is_stream_active = "afm_stream_active";
+const key_is_chat = "afm_chat";
 
 function query_from_string(text) {
     let query = {};
@@ -42,6 +43,14 @@ function query_to_string(query) {
     }
 
     return text;
+}
+
+function add_chat_query_info_to_link(link) {
+    const query = query_from_string(window.location.href);
+    const check = get_if_in_query(query, key_is_chat, false);
+    if (check != false) {
+        link.href = link.href + "?" + key_is_chat + "=" + check;
+    }
 }
 
 function get_if_in_query(query, key, def_value) {
@@ -127,10 +136,37 @@ function login(username, password) {
                 // In case of valid response, store auth token in session data
                 localStorage.setItem(key_auth_token, response[key_auth_token]);
 
-                let query = [];
+                let query = {};
                 query[key_auth_token] = response[key_auth_token];
-                const href = window.location.origin + get_if_in_query(query_from_string(window.location.href), key_origin, "/") + query_to_string(query);
-                window.location.href = href;
+
+                if (localStorage.getItem(key_is_chat) === null) {
+                    localStorage.removeItem(key_is_chat);
+
+                    const href = window.location.origin + get_if_in_query(query_from_string(window.location.href), key_origin, "/") + query_to_string(query);
+                    window.location.href = href;
+                } else {
+                    data[key_auth_token] = response[key_auth_token];
+                    $.ajax(
+                        {
+                            url: window.location.origin + '/chat_token',
+                            type: "POST",
+                            data: data,
+                            success: function (response) {
+                                localStorage.removeItem(key_is_chat);
+                
+                                window.parent.postMessage({
+                                    event: 'login-with-token',
+                                    loginToken: response[key_auth_token]
+                                }, rocket_chat_url);
+                            },
+                            error: function (response) {
+                                alert(response.responseJSON[key_message]);
+                
+                                window.location.href = "/login";
+                            }
+                        }
+                    );
+                }
             },
             error: function (response_header) {
                 // In case of error, remove auth token from session storage, post error and reload form

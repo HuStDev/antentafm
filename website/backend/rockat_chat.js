@@ -204,6 +204,23 @@ export async function verify(token) {
     }
 }
 
+export async function decode_to_chat_token(token) {
+    let payload = null;
+
+    try {
+        payload = decode_token(token);
+    } catch(error) {
+        Utils.log_error(error);
+        throw Errors.LOGIN_INVALID_SESSION_TOKEN;
+    }
+
+    if (payload == null) {
+        throw Errors.LOGIN_SESSION_EXPIRED;
+    }
+
+    return payload;
+}
+
 export async function logout(token) {
     let payload = null;
 

@@ -13,3 +13,4 @@ export const key_stream_audio_level = "afm_stream_audio_level"
 export const key_stream_started = "afm_stream_started";
 export const key_stream_stopped = "afm_stream_stopped";
 export const key_is_stream_active = "afm_stream_active";
+export const key_is_chat = "afm_chat";

@@ -2,6 +2,7 @@ import fs from 'fs';
 import express from 'express';
 
 import * as Config from './backend/config.js';
+import * as Global from './backend/globals.js';
 
 const app = express();
 
@@ -26,6 +27,11 @@ const server =  app.listen(7000, () => {
 // CORS setting
 app.use((request, response, next) => {
   Session.use(request, response, next);
+});
+
+app.get('/chat', function (request, response) {
+  response.set('Content-Type', 'text/html');
+  fs.createReadStream('frontend/chat.html').pipe(response);
 });
 
 app.post('/login', function (request, response) {
@@ -61,6 +67,10 @@ app.get('/password', function (request, response) {
 
 app.post('/sso', function (request, response) {
   Session.sso(request, response);
+});
+
+app.post('/chat_token', function (request, response) {
+  Session.chat_token(request, response);
 });
 
 app.get('/', function (request, response) {
