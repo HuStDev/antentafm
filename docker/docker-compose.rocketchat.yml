@@ -2,6 +2,7 @@ version: "3.7"
 
 volumes:
   mongodb: { driver: local }
+  rocketchat: { driver: local }
 
 services:
   rocketchat:
@@ -38,6 +39,8 @@ services:
       - 3000
     ports:
       - "3000:3000"
+    volumes:
+      - rocketchat:/app/uploads
 
   mongodb:
     image: docker.io/bitnami/mongodb:${MONGODB_RELEASE}

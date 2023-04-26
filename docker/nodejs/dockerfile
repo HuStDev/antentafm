@@ -6,7 +6,6 @@ WORKDIR /usr/app
 EXPOSE 7000
 EXPOSE 9229
 
-VOLUME ["/usr/app"]
 VOLUME ["/usr/app/website"]
 VOLUME ["/usr/app/website/recordings"]
 

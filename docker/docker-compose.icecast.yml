@@ -1,7 +1,9 @@
 version: "3.7"
 
 volumes:
-  icecast: { driver: local }
+  icecast_log: { driver: local }
+  icecast_cfg: { driver: local }
+  icecast_etc: { driver: local }
 
 services:
   icecast:
@@ -20,9 +22,11 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - icecast:/var/log/icecast2
-      - /etc/localtime:/etc/localtime:ro
       - "${ICECAST_CONFIG_FILE}:/etc/icecast2/icecast.xml"
+      - icecast_etc:/etc/icecast2
+      - icecast_cfg:/config
+      - icecast_log:/var/log/icecast2
+      - /etc/localtime:/etc/localtime:ro
 
 networks:
   antentafm:

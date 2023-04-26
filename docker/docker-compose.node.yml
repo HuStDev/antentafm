@@ -25,7 +25,7 @@ services:
       - "9229:9229"
     volumes:
       - "${NODE_APP_HOST_DIR}:/usr/app/website"
-      - "node_recordings:/usr/app/website/recordings"
+      - node_recordings:/usr/app/website/recordings
 
 networks:
   antentafm:
