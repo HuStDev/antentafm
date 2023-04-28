@@ -11,9 +11,9 @@ app.use(express.urlencoded())
 
 app.use('/scripts/functions.js', express.static('frontend/functions.js'))
 app.use('/scripts/config.js', express.static('frontend/config.js'))
-app.use(Config.recordings_web_dir, express.static(Config.recordings_fs_dir))
 app.use('/template/recordings.html', express.static('frontend/recordings.html'))
 app.use('/scripts/dummy.mp3', express.static('frontend/dummy.mp3'))
+app.use('/recordings', express.static('recordings/'))
 
 import { Session } from './backend/session.js';
 import { Radio } from './backend/radio.js';

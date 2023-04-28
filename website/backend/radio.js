@@ -11,7 +11,7 @@ export class Radio {
 
     constructor() {
         this.record_process = null;
-        this.recordings_dir = Config.recordings_fs_dir;
+        this.recordings_dir = 'recordings';
         this.stream_started = Utils.date_utc_in_s();
         this.stream_stopped = Utils.date_utc_in_s();
         this.is_stream_active = false;
