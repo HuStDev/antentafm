@@ -1,6 +1,7 @@
 #!/bin/bash
-scripts=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+base_dir="$(realpath "$BASH_SOURCE")"
+base_dir="$(dirname "$base_dir")"
 
-pushd $scripts/..
-docker-compose -f $scripts/docker-compose.rocketchat.yml down
+pushd $base_dir
+docker-compose -f docker-compose.node.yml -f docker-compose.rocketchat.yml -f docker-compose.icecast.yml -f docker-compose.traefik.yml up
 popd

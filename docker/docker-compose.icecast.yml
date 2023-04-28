@@ -11,12 +11,16 @@ services:
     restart: ${DOCKER_RESTART_POLICY}
     networks:
       - "antentafm"
-    #labels:
-    #  traefik.enable: "true"
-    #  traefik.http.routers.rocketchat.rule: Host(`${DOMAIN}`)
-    #  traefik.http.routers.rocketchat.tls: "true"
-    #  traefik.http.routers.rocketchat.entrypoints: https
-    #  traefik.http.routers.rocketchat.tls.certresolver: le
+    labels:
+      traefik.enable: "${TRAEFIK_ENABLED}"
+      traefik.http.routers.stream_route.rule: "Host(`stream.${DOMAIN}`)" # Set domain
+      traefik.http.routers.stream_route.entrypoints: "web,websecure" # Assign Trafike service
+      traefik.http.routers.stream_route.tls: "true"
+      traefik.http.routers.stream_route.tls.certresolver: "letsencrypt"
+      traefik.http.routers.stream_route.tls.domains[0].main: "stream.${DOMAIN}"
+      traefik.http.routers.stream_route.tls.domains[0].sans: "stream.${DOMAIN}"
+      traefik.http.routers.stream_route.service: "stream_service" # Assign Trafike service
+      traefik.http.services.stream_service.loadbalancer.server.port: "8000" # Port of container used
     expose:
       - 8000
     ports:

@@ -7,21 +7,19 @@ services:
   reverse-proxy:
     image: traefik:${TRAEFIK_RELEASE}
     command:
-      - --log.level=${LOG_LEVEL}
-      - --providers.docker
-      - --providers.docker.exposedbydefault=false
-      # Entry points
-      - --entryPoints.web.address=:80
-      - --entrypoints.web.http.redirections.entryPoint.to=websecure
-      - --entrypoints.web.http.redirections.entryPoint.scheme=https
-      - --entryPoints.websecure.address=:443
-      # HTTP challenge
-      - --certificatesresolvers.myresolver.acme.email=${ACME_EMAIL}
-      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
-      # Let's Encrypt's staging server
-      # uncomment during testing to avoid rate limiting
-      #- --certificatesresolvers.dnsresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+      --log.level=DEBUG
+      --providers.docker=true
+      --providers.docker.exposedbydefault=false
+      --entryPoints.web.address=:80
+      --entryPoints.websecure.address=:443
+      --entrypoints.web.http.redirections.entryPoint.to=websecure
+      --entrypoints.web.http.redirections.entryPoint.scheme=https
+      --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
+      --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=websecure
+      --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+      #--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
     ports:
       - "${HTTP_PORT}:80"
       - "${HTTPS_PORT}:443"
@@ -31,3 +29,6 @@ services:
     restart: ${DOCKER_RESTART_POLICY}
     networks:
       - "antentafm"
+
+networks:
+  antentafm:

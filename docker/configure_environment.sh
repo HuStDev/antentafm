@@ -21,17 +21,22 @@ copy_template() {
 # 2 base dir
 # 3 is in dev env
 # 4 path to icecast config file
-# 5 domain node application
+# 5 domain 
 configure_env () {
     case $3 in
-        [Yy]* ) sed -i "s#_NPM_SKIP_START_#NPM_SKIP_START=1#g" "$1";;
-        * ) sed -i "s#_NPM_SKIP_START_##g" "$1";;
+        [Yy]* ) sed -i 's#_NPM_SKIP_START_#NPM_SKIP_START=1#g' '$1';;
+        * ) sed -i 's#_NPM_SKIP_START_##g' '$1';;
+    esac
+
+    case $3 in
+        [Yy]* ) sed -i 's#_TRAEFIK_ENABLED_#"false"#g' '$1';;
+        * ) sed -i 's#_TRAEFIK_ENABLED_#"true"#g' '$1';;
     esac
 
     host_dir="$(dirname "$2")/website"
     sed -i "s#_NODE_HOST_DIR_#$host_dir#g" "$1"
     sed -i "s#_ICECAST_CONFIG_#$4#g" "$1"
-    sed -i "s#_DOMAIN_NODE_APP_#$5#g" "$1"
+    sed -i "s#_DOMAIN_#$5#g" "$1"
 
     update_placeholder "(Docker): Email that shall be used for ACME:" "_ACME_EMAIL_" "$1"
 }
@@ -91,13 +96,12 @@ copy_template "$docker_dir/icecast.xml.in" "$icecast_cfg"
 website_dir="$(dirname "$docker_dir")"
 website_dir="$website_dir/website"
 
-echo "Domain of node application:"
-read domain_node
-echo "Domain of streaming server:"
-read domain_streaming
-echo "Domain of chat server:"
-read domain_chat
+echo "Domain:"
+read domain
+domain_node="radio.$domain"
+domain_streaming="stream.$domain"
+domain_chat="chat.$domain"
 
-configure_env "$env_file" "$docker_dir" "$is_dev_env" "$icecast_cfg" "$domain_node"
+configure_env "$env_file" "$docker_dir" "$is_dev_env" "$icecast_cfg" "$domain"
 configure_icecast "$icecast_cfg" "$domain_streaming" "$domain_node"
 configure_node "$website_dir" "$domain_node" "$domain_streaming"
