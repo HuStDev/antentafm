@@ -14,7 +14,7 @@ services:
       traefik.enable: "${TRAEFIK_ENABLED}"
       traefik.http.routers.chat_route.rule: "Host(`chat.${DOMAIN}`)" # Set domain
       traefik.http.routers.chat_route.entrypoints: "web,websecure" # Assign Trafike service
-      traefik.http.routers.chat_route.tls: "true"
+      traefik.http.routers.chat_route.tls: "_TLS_CHALLENGE_"
       traefik.http.routers.chat_route.tls.certresolver: "letsencrypt"
       traefik.http.routers.chat_route.tls.domains[0].main: "chat.${DOMAIN}"
       traefik.http.routers.chat_route.tls.domains[0].sans: "chat.${DOMAIN}"

@@ -5,3 +5,4 @@ website/recordings/
 config.js
 icecast.xml
 recordings.html
+docker-compose.*.yml

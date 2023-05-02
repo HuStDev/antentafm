@@ -15,7 +15,7 @@ services:
       traefik.enable: "${TRAEFIK_ENABLED}"
       traefik.http.routers.stream_route.rule: "Host(`stream.${DOMAIN}`)" # Set domain
       traefik.http.routers.stream_route.entrypoints: "web,websecure" # Assign Trafike service
-      traefik.http.routers.stream_route.tls: "true"
+      traefik.http.routers.stream_route.tls: "_TLS_CHALLENGE_"
       traefik.http.routers.stream_route.tls.certresolver: "letsencrypt"
       traefik.http.routers.stream_route.tls.domains[0].main: "stream.${DOMAIN}"
       traefik.http.routers.stream_route.tls.domains[0].sans: "stream.${DOMAIN}"

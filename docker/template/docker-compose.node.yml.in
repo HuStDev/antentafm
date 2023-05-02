@@ -13,7 +13,7 @@ services:
       traefik.enable: "${TRAEFIK_ENABLED}"
       traefik.http.routers.node_route.rule: "Host(`radio.${DOMAIN}`)" # Set domain
       traefik.http.routers.node_route.entrypoints: "web,websecure" # Assign Trafike service
-      traefik.http.routers.node_route.tls: "true"
+      traefik.http.routers.node_route.tls: "_TLS_CHALLENGE_"
       traefik.http.routers.node_route.tls.certresolver: "letsencrypt"
       traefik.http.routers.node_route.tls.domains[0].main: "radio.${DOMAIN}"
       traefik.http.routers.node_route.tls.domains[0].sans: "radio.${DOMAIN}"
