@@ -42,7 +42,7 @@ function query_to_string(query) {
         text += key + "=" + value + "&";
     }
 
-    return text;
+    return text.slice(0, -1);
 }
 
 function add_chat_query_info_to_link(link) {
@@ -104,6 +104,7 @@ function sso() {
 function logout() {
     let data = {};
     data[key_auth_token] = localStorage.getItem(key_auth_token);
+    localStorage.removeItem(key_auth_token);
 
     $.ajax(
         {
@@ -111,11 +112,9 @@ function logout() {
             type: "POST",
             data: data,
             success: function (response) {
-                localStorage.removeItem(key_auth_token);
                 window.location.href = "/";
             },
             error: function (response_header) {
-                localStorage.removeItem(key_auth_token);
                 window.location.href = "/";
             }
         }

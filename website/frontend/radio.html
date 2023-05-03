@@ -13,9 +13,9 @@
 
     <script>
         // Hide full HTML path in URL
-        //jQuery(document).ready(function($) {
-        //    window.history.replaceState({}, document.title, "/");
-        //});
+        jQuery(document).ready(function($) {
+            window.history.replaceState({}, document.title, "/");
+        });
         
         sso();
     </script>
@@ -79,7 +79,8 @@
             <script>
                 document.getElementById("id_chat_frame").width = parseInt((1.0 * screen.width) / 2) * 2;
                 document.getElementById("id_chat_frame").height = parseInt((0.6 * screen.height) / 2) * 2;
-                document.getElementById("id_chat_frame").src = String(rocket_chat_url) + "/channel/general?layout=embedded";
+                document.getElementById("id_chat_frame").src = String(web_protocol) + String(rocket_chat_url) + "/channel/general?layout=embedded";
+                document.getElementById("id_chat_frame").src = String(web_protocol) + String(rocket_chat_url) + "/channel/general";
 
                 window.addEventListener('message', function(e) {
 
@@ -89,7 +90,7 @@
                                 event: 'login-with-token',
                                 loginToken: localStorage.getItem(key_auth_token)
                             },
-                            String(rocket_chat_url)
+                            String(web_protocol) + String(rocket_chat_url)
                         );
                     }
                 });
