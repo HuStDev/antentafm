@@ -1,3 +1,5 @@
+_EXPORT_const web_protocol = "_WEB_PROTOCOL_"
+_EXPORT_const node_app_url = "_DOMAIN_NODE_"
 _EXPORT_const rocket_chat_url = "_DOMAIN_CHAT_"
 _EXPORT_const icecast_url = "_DOMAIN_STREAM_"
 _EXPORT_const icecast_stream_url = "_DOMAIN_STREAM_/live"

@@ -12,13 +12,13 @@ services:
       --providers.docker=true
       --providers.docker.exposedbydefault=false
       --entryPoints.web.address=:80
-      --entryPoints.websecure.address=:443
-      --entrypoints._ENTRYPOINT_.http.redirections.entryPoint.to=_REDIRECT_
-      --entrypoints._ENTRYPOINT_.http.redirections.entryPoint.scheme=_SCHEME_
-      --certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
-      --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=websecure
-      --certificatesresolvers.letsencrypt.acme.tlschallenge=_TLS_CHALLENGE_
+      _TRAEFIK_ENABLED_--entryPoints.websecure.address=:443
+      _TRAEFIK_ENABLED_--entrypoints.web.http.redirections.entryPoint.to=websecure
+      _TRAEFIK_ENABLED_--entrypoints.web.http.redirections.entryPoint.scheme=https
+      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
+      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=websecure
+      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.tlschallenge=_TLS_CHALLENGE_
       #--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
     ports:
       - "${HTTP_PORT}:80"

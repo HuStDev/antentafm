@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jsonwebtoken from 'jsonwebtoken';
 
-import { rocket_chat_url } from './config.js';
+import { rocket_chat_url, web_protocol } from './config.js';
 import { secret_key } from './config.js';
 import { Errors } from './errors.js';
 import { Utils } from './utils.js';
@@ -79,12 +79,12 @@ function decode_token(web_token) {
 export async function login(username, password) {
     try {
         let response = await axios.post(
-            rocket_chat_url + '/api/v1/login',
+            web_protocol + rocket_chat_url + '/api/v1/login',
             {
                 user: username,
                 password: password
             },
-            //generate_header()
+            generate_header()
         );
 
         if (response.status != 200) {
@@ -109,7 +109,7 @@ export async function register(user, password, validation) {
 
     try {
         let response = await axios.post(
-            rocket_chat_url + '/api/v1/users.register',
+            web_protocol + rocket_chat_url + '/api/v1/users.register',
             {
                 username: user,
                 pass: password,
@@ -154,7 +154,7 @@ export async function change_password(session_token, current_password, new_passw
         };
 
         let response = await axios.post(
-            rocket_chat_url + '/api/v1/users.updateOwnBasicInfo',
+            web_protocol + rocket_chat_url + '/api/v1/users.updateOwnBasicInfo',
             data,
             generate_auth_header(payload)
         );
@@ -187,7 +187,7 @@ export async function verify(token) {
 
     try {
         const response = await axios.post(
-            rocket_chat_url + '/api/v1/login',
+            web_protocol + rocket_chat_url + '/api/v1/login',
             {
                 resume: payload[Global.key_auth_token]
             },
@@ -237,7 +237,7 @@ export async function logout(token) {
 
     try {
         const response = await axios.post(
-            rocket_chat_url + '/api/v1/logout',
+            web_protocol + rocket_chat_url + '/api/v1/logout',
             {},
             generate_auth_header(payload)
         );

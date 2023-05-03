@@ -13,11 +13,11 @@ services:
     labels:
       traefik.enable: "${TRAEFIK_ENABLED}"
       traefik.http.routers.chat_route.rule: "Host(`chat.${DOMAIN}`)" # Set domain
-      traefik.http.routers.chat_route.entrypoints: "web,websecure" # Assign Trafike service
-      traefik.http.routers.chat_route.tls: "_TLS_CHALLENGE_"
-      traefik.http.routers.chat_route.tls.certresolver: "letsencrypt"
-      traefik.http.routers.chat_route.tls.domains[0].main: "chat.${DOMAIN}"
-      traefik.http.routers.chat_route.tls.domains[0].sans: "chat.${DOMAIN}"
+      traefik.http.routers.chat_route.entrypoints: "_ENTRYPOINTS_" # Assign Trafike service
+      _TRAEFIK_ENABLED_traefik.http.routers.chat_route.tls: "_TLS_CHALLENGE_"
+      _TRAEFIK_ENABLED_traefik.http.routers.chat_route.tls.certresolver: "letsencrypt"
+      _TRAEFIK_ENABLED_traefik.http.routers.chat_route.tls.domains[0].main: "chat.${DOMAIN}"
+      _TRAEFIK_ENABLED_traefik.http.routers.chat_route.tls.domains[0].sans: "chat.${DOMAIN}"
       traefik.http.routers.chat_route.service: "chat_service" # Assign Trafike service
       traefik.http.services.chat_service.loadbalancer.server.port: "3000" # Port of container used
     environment:

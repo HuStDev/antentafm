@@ -79,24 +79,30 @@ configure_icecast () {
 
 ########################################
 # 1 website dir
-# 2 domain chat
-# 3 domain stream
-# 4 is in dev env
+# 2 domain node
+# 3 domain chat
+# 4 domain stream
+# 5 is in dev env
 configure_node () {
     copy_template "$1/backend/config.js.in" "$1/backend/config.js"
 
-    sed -i "s#_DOMAIN_CHAT_#$2#g" "$1/backend/config.js"
-    sed -i "s#_DOMAIN_STREAM_#$3#g" "$1/backend/config.js"
+    sed -i "s#_DOMAIN_NODE_#$2#g" "$1/backend/config.js"
+    sed -i "s#_DOMAIN_CHAT_#$3#g" "$1/backend/config.js"
+    sed -i "s#_DOMAIN_STREAM_#$4#g" "$1/backend/config.js"
 
-    case "$4" in
+    case "$5" in
         [Yy]* )
             sed -i 's#_SECRET_KEY_#12345678901234567890123456789012#g' "$1/backend/config.js"
             sed -i 's#_VALIDATION_KEY_#1234567890#g' "$1/backend/config.js"
+
+            sed -i 's#_WEB_PROTOCOL_#http://#g' "$1/backend/config.js"
 
             ;;
         * )
             update_placeholder "(Node): Secret key for encryption (32 chars):" "_SECRET_KEY_" "$1/backend/config.js"
             update_placeholder "(Node): Quick validation key:" "_VALIDATION_KEY_" "$1/backend/config.js"
+
+            sed -i 's#_VALIDATION_KEY_#https://#g' "$1/backend/config.js"
 
             ;;
     esac
@@ -126,28 +132,32 @@ configure_traefik () {
 
     case "$2" in
         [Yy]* )
-            sed -i "s#_ENTRYPOINT_#websecure#g" "$compose_traefik_cfg"
-            sed -i "s#_REDIRECT_#web#g" "$compose_traefik_cfg"
-            sed -i "s#_SCHEME_#http#g" "$compose_traefik_cfg"
-
-            sed -i "s#_TLS_CHALLENGE_#false#g" "$compose_traefik_cfg"
-            sed -i "s#_TLS_CHALLENGE_#false#g" "$compose_node_cfg"
-            sed -i "s#_TLS_CHALLENGE_#false#g" "$compose_icecast_cfg"
-            sed -i "s#_TLS_CHALLENGE_#false#g" "$compose_rocketchat_cfg"
+            traefik_enabled="#"
+            tls_challenge="false"
+            entrypoints="web"
 
             ;;
         * )
-            sed -i "s#_ENTRYPOINT_#web#g" "$compose_traefik_cfg"
-            sed -i "s#_REDIRECT_#websecure#g" "$compose_traefik_cfg"
-            sed -i "s#_SCHEME_#https#g" "$compose_traefik_cfg"
-
-            sed -i "s#_TLS_CHALLENGE_#true#g" "$compose_traefik_cfg"
-            sed -i "s#_TLS_CHALLENGE_#true#g" "$compose_node_cfg"
-            sed -i "s#_TLS_CHALLENGE_#true#g" "$compose_icecast_cfg"
-            sed -i "s#_TLS_CHALLENGE_#true#g" "$compose_rocketchat_cfg"
+            traefik_enabled=""
+            tls_challenge="true"
+            entrypoints="web,websecure"
 
             ;;
     esac
+
+    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_traefik_cfg"
+    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_node_cfg"
+    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_icecast_cfg"
+    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_rocketchat_cfg"
+
+    sed -i "s/_TRAEFIK_ENABLED_/${traefik_enabled}/g" "$compose_traefik_cfg"
+    sed -i "s/_TRAEFIK_ENABLED_/${traefik_enabled}/g" "$compose_node_cfg"
+    sed -i "s/_TRAEFIK_ENABLED_/${traefik_enabled}/g" "$compose_icecast_cfg"
+    sed -i "s/_TRAEFIK_ENABLED_/${traefik_enabled}/g" "$compose_rocketchat_cfg"
+
+    sed -i "s#_ENTRYPOINTS_#${entrypoints}#g" "$compose_node_cfg"
+    sed -i "s#_ENTRYPOINTS_#${entrypoints}#g" "$compose_icecast_cfg"
+    sed -i "s#_ENTRYPOINTS_#${entrypoints}#g" "$compose_rocketchat_cfg"
 
     case "$2" in
         [Yy]* )
@@ -197,5 +207,5 @@ domain_chat="chat.$domain"
 
 configure_env "$env_file" "$docker_dir" "$is_dev_env" "$icecast_cfg" "$domain"
 configure_icecast "$icecast_cfg" "$domain_streaming" "$domain_node" "$is_dev_env"
-configure_node "$website_dir" "$domain_node" "$domain_streaming" "$is_dev_env"
+configure_node "$website_dir" "$domain_node" "$domain_chat" "$domain_streaming" "$is_dev_env"
 configure_traefik "$docker_dir" "$is_dev_env"
