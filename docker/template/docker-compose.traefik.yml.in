@@ -5,7 +5,9 @@ volumes:
 
 services:
   reverse-proxy:
-    image: traefik:${TRAEFIK_RELEASE}
+    image: hust/traefik:${TRAEFIK_RELEASE}
+    networks:
+      - "antentafm"
     command:
       # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       --log.level=DEBUG
@@ -13,13 +15,15 @@ services:
       --providers.docker.exposedbydefault=false
       --entryPoints.web.address=:80
       _TRAEFIK_ENABLED_--entryPoints.websecure.address=:443
-      _TRAEFIK_ENABLED_--entrypoints.web.http.redirections.entryPoint.to=websecure
-      _TRAEFIK_ENABLED_--entrypoints.web.http.redirections.entryPoint.scheme=https
       _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}
       _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=websecure
-      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.tlschallenge=_TLS_CHALLENGE_
+      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.dnschallenge=true
+      _TRAEFIK_ENABLED_--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=googledomains
+      #_TRAEFIK_ENABLED_--entrypoints.web.http.redirections.entryPoint.to=websecure
+      #_TRAEFIK_ENABLED_--entrypoints.web.http.redirections.entryPoint.scheme=https
       #--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+    environment:
+      - "GOOGLE_DOMAINS_ACCESS_TOKEN=${GOOGLE_DOMAINS_TOKEN}" 
     ports:
       - "${HTTP_PORT}:80"
       - "${HTTPS_PORT}:443"

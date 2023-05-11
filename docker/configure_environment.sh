@@ -22,21 +22,23 @@ copy_template() {
 # 3 is in dev env
 # 4 path to icecast config file
 # 5 domain 
+# 6 contact email
 configure_env () {
     case "$3" in
         [Yy]* )
             sed -i 's#_NPM_SKIP_START_#NPM_SKIP_START=1#g' "$1"
-            sed -i 's#_ACME_EMAIL_#user@radio.de#g' "$1"
+            sed -i 's#_GOOGLE_DOMAINS_TOKEN_#None#g' "$1"  
 
             ;;
         * )
             sed -i 's#_NPM_SKIP_START_##g' "$1"
-            update_placeholder "(Docker): Email that shall be used for ACME:" "_ACME_EMAIL_" "$1"
+            update_placeholder "(general) Google Domains access token:" "_GOOGLE_DOMAINS_TOKEN_" "$1"  n
 
             ;;
     esac
 
-    sed -i 's#_TRAEFIK_ENABLED_#"true"#g' "$1"
+    sed -i "s#_ACME_EMAIL_#$6#g" "$1"
+    sed -i "s#_TRAEFIK_ENABLED_#true#g" "$1"
 
     host_dir="$(dirname "$2")/website"
     sed -i "s#_NODE_HOST_DIR_#$host_dir#g" "$1"
@@ -49,11 +51,10 @@ configure_env () {
 # 2 domain streaming server
 # 3 domain node application
 # 4 is in dev env
+# 5 contact email
 configure_icecast () {
     case "$4" in
         [Yy]* )
-            sed -i 's#_LOCATION_#internet=1#g' "$1"
-            sed -i 's#_CONTACT_#user@radio.de#g' "$1"
             sed -i 's#_SOURCE_PASSWORD_#hackme#g' "$1"
             sed -i 's#_RELAY_PASSWORD_#hackme#g' "$1"
             sed -i 's#_ADMIN_USERNAME_#admin#g' "$1"
@@ -61,8 +62,6 @@ configure_icecast () {
 
             ;;
         * )
-            update_placeholder "(Icecast): Location of server:" "_LOCATION_" "$1"
-            update_placeholder "(Icecast): Admin email (and name):" "_CONTACT_" "$1"
             update_placeholder "(Icecast): Source password:" "_SOURCE_PASSWORD_" "$1"
             update_placeholder "(Icecast): Relay password:" "_RELAY_PASSWORD_" "$1"
             update_placeholder "(Icecast): Admin username:" "_ADMIN_USERNAME_" "$1"
@@ -73,6 +72,8 @@ configure_icecast () {
 
     update_placeholder "(Icecast): Log level (4 Debug, 3 Info, 2 Warn, 1 Error):" "_LOG_LEVEL_" "$1"
 
+    sed -i "s#_LOCATION_#nowhere#g" "$1"
+    sed -i "s#_CONTACT_#$5#g" "$1"
     sed -i "s#_HOSTNAME_#$2#g" "$1"
     sed -i "s#_AUTH_URL_#$3/radio#g" "$1"
 }
@@ -102,7 +103,7 @@ configure_node () {
             update_placeholder "(Node): Secret key for encryption (32 chars):" "_SECRET_KEY_" "$1/backend/config.js"
             update_placeholder "(Node): Quick validation key:" "_VALIDATION_KEY_" "$1/backend/config.js"
 
-            sed -i 's#_VALIDATION_KEY_#https://#g' "$1/backend/config.js"
+            sed -i 's#_WEB_PROTOCOL_#https://#g' "$1/backend/config.js"
 
             ;;
     esac
@@ -140,7 +141,7 @@ configure_traefik () {
         * )
             traefik_enabled=""
             tls_challenge="true"
-            entrypoints="web,websecure"
+            entrypoints="websecure"
 
             ;;
     esac
@@ -176,7 +177,7 @@ configure_traefik () {
 # Main
 ################################################################################
 
-echo "Used in VSCode development environment (y/n)?"
+echo "(general) Used in VSCode development environment (y/n):"
 read is_dev_env
 
 docker_dir="$(realpath "$BASH_SOURCE")"
@@ -194,10 +195,13 @@ website_dir="$website_dir/website"
 case "$is_dev_env" in
     [Yy]* )
         domain="localhost"
+        contact_email="user@radio.de"
         ;;
     * )
-        echo "Domain:"
+        echo "(general) Domain:"
         read domain
+        echo "(general) Contact email adress:"
+        read contact_email 
         ;;
 esac
 
@@ -205,7 +209,7 @@ domain_node="radio.$domain"
 domain_streaming="stream.$domain"
 domain_chat="chat.$domain"
 
-configure_env "$env_file" "$docker_dir" "$is_dev_env" "$icecast_cfg" "$domain"
-configure_icecast "$icecast_cfg" "$domain_streaming" "$domain_node" "$is_dev_env"
+configure_env "$env_file" "$docker_dir" "$is_dev_env" "$icecast_cfg" "$domain" "$contact_email"
+configure_icecast "$icecast_cfg" "$domain_streaming" "$domain_node" "$is_dev_env" "$contact_email"
 configure_node "$website_dir" "$domain_node" "$domain_chat" "$domain_streaming" "$is_dev_env"
 configure_traefik "$docker_dir" "$is_dev_env"

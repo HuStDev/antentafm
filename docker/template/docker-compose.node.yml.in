@@ -15,8 +15,8 @@ services:
       traefik.http.routers.node_route.entrypoints: "_ENTRYPOINTS_" # Assign Trafike service
       _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls: "_TLS_CHALLENGE_"
       _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.certresolver: "letsencrypt"
-      _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.domains[0].main: "radio.${DOMAIN}"
-      _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.domains[0].sans: "radio.${DOMAIN}"
+      _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.domains[0].main: "${DOMAIN}"
+      _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.domains[0].sans: "*.${DOMAIN}"
       traefik.http.routers.node_route.service: "node_service" # Assign Trafike service
       traefik.http.services.node_service.loadbalancer.server.port: "7000" # Port of container used
     environment:
