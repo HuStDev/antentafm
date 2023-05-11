@@ -1,0 +1,52 @@
+diff --git a/Makefile b/Makefile
+index 8de756967..1db6e6b8b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -9,7 +9,7 @@ GIT_BRANCH := $(subst heads/,,$(shell git rev-parse --abbrev-ref HEAD 2>/dev/nul
+ TRAEFIK_DEV_IMAGE := traefik-dev$(if $(GIT_BRANCH),:$(subst /,-,$(GIT_BRANCH)))
+ 
+ REPONAME := $(shell echo $(REPO) | tr '[:upper:]' '[:lower:]')
+-TRAEFIK_IMAGE := $(if $(REPONAME),$(REPONAME),"traefik/traefik")
++TRAEFIK_IMAGE := $(if $(REPONAME),$(REPONAME),"hust/traefik:v2.10.1")
+ 
+ INTEGRATION_OPTS := $(if $(MAKE_DOCKER_HOST),-e "DOCKER_HOST=$(MAKE_DOCKER_HOST)",-v "/var/run/docker.sock:/var/run/docker.sock")
+ DOCKER_BUILD_ARGS := $(if $(DOCKER_VERSION), "--build-arg=DOCKER_VERSION=$(DOCKER_VERSION)",)
+diff --git a/go.mod b/go.mod
+index abe11af2a..d0af67983 100644
+--- a/go.mod
++++ b/go.mod
+@@ -19,7 +19,7 @@ require (
+ 	github.com/docker/go-connections v0.4.0
+ 	github.com/fatih/structs v1.1.0
+ 	github.com/gambol99/go-marathon v0.0.0-20180614232016-99a156b96fb2
+-	github.com/go-acme/lego/v4 v4.10.2
++	github.com/go-acme/lego/v4 v4.11.0
+ 	github.com/go-check/check v0.0.0-00010101000000-000000000000
+ 	github.com/go-kit/kit v0.10.1-0.20200915143503-439c4d2ed3ea
+ 	github.com/golang/protobuf v1.5.2
+diff --git a/go.sum b/go.sum
+index 7a6444543..20a8d8f33 100644
+--- a/go.sum
++++ b/go.sum
+@@ -656,8 +656,8 @@ github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeME
+ github.com/gin-contrib/sse v0.1.0/go.mod h1:RHrZQHXnP2xjPF+u1gW/2HnVO7nvIa9PG3Gm+fLHvGI=
+ github.com/gin-gonic/gin v1.7.4/go.mod h1:jD2toBW3GZUr5UMcdrwQA10I7RuaFOl/SGeDjXkfUtY=
+ github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8/go.mod h1:xkRDCp4j0OGD1HRkm4kmhM+pmpv3AKq5SU7GMg4oO/Q=
+-github.com/go-acme/lego/v4 v4.10.2 h1:5eW3qmda5v/LP21v1Hj70edKY1jeFZQwO617tdkwp6Q=
+-github.com/go-acme/lego/v4 v4.10.2/go.mod h1:EMbf0Jmqwv94nJ5WL9qWnSXIBZnvsS9gNypansHGc6U=
++github.com/go-acme/lego/v4 v4.11.0 h1:oIPoU7zBJoTfoVrbqk62+/2NsGCSgCVK1JtZSZZ28SU=
++github.com/go-acme/lego/v4 v4.11.0/go.mod h1:dENL0J3/WughN2NLy0T35otK5k1EWCmXTwCw0+X5ZaE=
+ github.com/go-asn1-ber/asn1-ber v1.3.1/go.mod h1:hEBeB/ic+5LoWskz+yKT7vGhhPYkProFKoKdwZRWMe0=
+ github.com/go-chi/chi/v5 v5.0.0/go.mod h1:BBug9lr0cqtdAhsu6R4AAdvufI0/XBzAQSsUqJpoZOs=
+ github.com/go-cmd/cmd v1.0.5/go.mod h1:y8q8qlK5wQibcw63djSl/ntiHUHXHGdCkPk0j4QeW4s=
+diff --git a/script/generate b/script/generate
+index 423970b5a..90f630d59 100755
+--- a/script/generate
++++ b/script/generate
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bash
+ set -e
+ 
++git config --global --add safe.directory /go/src/github.com/traefik/traefik
++go mod tidy
+ go generate

@@ -41,6 +41,50 @@
             ],
             "label": "Configure dev environment",
             "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "command": [
+                "git clone https://github.com/traefik/traefik docker/traefik",
+                "&&",
+                "git checkout tags/v2.10.1"
+            ],
+            "label": "Traefik git checkout",
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "command": [
+                "cd docker/traefik",
+                "&&",
+                "git checkout .",
+                "&&",
+                "git restore .",
+                "&&",
+                "git checkout tags/v2.10.1",
+                "&&",
+                "git apply ../traefik.patch"
+            ],
+            "label": "Traefik patch version",
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "command": [
+                "cd docker/traefik",
+                "&&",
+                "make build-image"
+            ],
+            "label": "Traefik generate image",
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "command": [
+                "rm -r docker/traefik"
+            ],
+            "label": "Traefik rm git",
+            "problemMatcher": []
         }
     ]
   }
