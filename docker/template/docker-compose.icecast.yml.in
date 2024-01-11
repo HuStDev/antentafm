@@ -13,14 +13,19 @@ services:
       - "antentafm"
     labels:
       traefik.enable: "${TRAEFIK_ENABLED}"
-      traefik.http.routers.stream_route.rule: "Host(`stream.${DOMAIN}`)" # Set domain
-      traefik.http.routers.stream_route.entrypoints: "_ENTRYPOINTS_" # Assign Trafike service
-      _TRAEFIK_ENABLED_traefik.http.routers.stream_route.tls: "_TLS_CHALLENGE_"
-      _TRAEFIK_ENABLED_traefik.http.routers.stream_route.tls.certresolver: "letsencrypt"
-      _TRAEFIK_ENABLED_traefik.http.routers.stream_route.tls.domains[0].main: "stream.${DOMAIN}"
-      _TRAEFIK_ENABLED_traefik.http.routers.stream_route.tls.domains[0].sans: "stream.${DOMAIN}"
-      traefik.http.routers.stream_route.service: "stream_service" # Assign Trafike service
-      traefik.http.services.stream_service.loadbalancer.server.port: "8000" # Port of container used
+       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.rule: HostSNI(`*`)
+       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.entrypoints: web
+       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.tls: false
+       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.service: icecast-tcp
+       _TRAEFIK_ENABLED_traefik.tcp.services.icecast-tcp.loadbalancer.server.port: 8000
+       _TRAEFIK_ENABLED_traefik.http.routers.icecast-insecure.rule: "Host(`stream.${DOMAIN}`)"
+       _TRAEFIK_ENABLED_traefik.http.routers.icecast-insecure.entrypoints: web
+       _TRAEFIK_ENABLED_traefik.http.routers.icecast-insecure.middlewares: redirect-secure
+       _TRAEFIK_ENABLED_traefik.http.routers.icecast.rule: "Host(`stream.${DOMAIN}`)"
+       _TRAEFIK_ENABLED_traefik.http.routers.icecast.entrypoints: websecure
+       _TRAEFIK_ENABLED_traefik.http.routers.icecast.tls.certresolver: "letsencrypt"
+       _TRAEFIK_ENABLED_traefik.http.routers.icecast.service: icecast
+       _TRAEFIK_ENABLED_traefik.http.services.icecast.loadbalancer.server.port: 8000
     expose:
       - 8000
     ports:
