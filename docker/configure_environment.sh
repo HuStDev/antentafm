@@ -95,13 +95,15 @@ configure_node () {
         [Yy]* )
             sed -i 's#_SECRET_KEY_#12345678901234567890123456789012#g' "$1/backend/config.js"
             sed -i 's#_VALIDATION_KEY_#1234567890#g' "$1/backend/config.js"
+            sed -i 's#_VALIDATION_QUESTION_#1234567890#g' "$1/backend/config.js"
 
             sed -i 's#_WEB_PROTOCOL_#http://#g' "$1/backend/config.js"
 
             ;;
         * )
             update_placeholder "(Node): Secret key for encryption (32 chars):" "_SECRET_KEY_" "$1/backend/config.js"
-            update_placeholder "(Node): Quick validation key:" "_VALIDATION_KEY_" "$1/backend/config.js"
+            update_placeholder "(Node): Validation question:" "_VALIDATION_QUESTION_" "$1/backend/config.js"
+            update_placeholder "(Node): Validation answer:" "_VALIDATION_KEY_" "$1/backend/config.js"
 
             sed -i 's#_WEB_PROTOCOL_#https://#g' "$1/backend/config.js"
 
