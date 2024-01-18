@@ -13,21 +13,22 @@ services:
       - "antentafm"
     labels:
       traefik.enable: "${TRAEFIK_ENABLED}"
-       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.rule: HostSNI(`*`)
-       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.entrypoints: web
-       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.tls: false
-       _TRAEFIK_ENABLED_traefik.tcp.routers.icecast-tcp.service: icecast-tcp
-       _TRAEFIK_ENABLED_traefik.tcp.services.icecast-tcp.loadbalancer.server.port: 8000
-       _TRAEFIK_ENABLED_traefik.http.routers.icecast-insecure.rule: "Host(`stream.${DOMAIN}`)"
-       _TRAEFIK_ENABLED_traefik.http.routers.icecast-insecure.entrypoints: web
-       _TRAEFIK_ENABLED_traefik.http.routers.icecast-insecure.middlewares: redirect-secure
-       _TRAEFIK_ENABLED_traefik.http.routers.icecast.rule: "Host(`stream.${DOMAIN}`)"
-       _TRAEFIK_ENABLED_traefik.http.routers.icecast.entrypoints: websecure
-       _TRAEFIK_ENABLED_traefik.http.routers.icecast.tls.certresolver: "letsencrypt"
-       _TRAEFIK_ENABLED_traefik.http.routers.icecast.service: icecast
-       _TRAEFIK_ENABLED_traefik.http.services.icecast.loadbalancer.server.port: 8000
-    expose:
-      - 8000
+      traefik.tcp.routers.icecast-tcp.rule: HostSNI(`*`)
+      traefik.tcp.routers.icecast-tcp.entrypoints: web
+      traefik.tcp.routers.icecast-tcp.tls: false
+      traefik.tcp.routers.icecast-tcp.service: icecast-tcp
+      traefik.tcp.services.icecast-tcp.loadbalancer.server.port: 8000
+      traefik.http.routers.icecast-insecure.rule: "Host(`stream.${DOMAIN}`)"
+      traefik.http.routers.icecast-insecure.entrypoints: web
+      traefik.http.routers.icecast-insecure.middlewares: redirect-secure
+      traefik.http.routers.icecast.rule: "Host(`stream.${DOMAIN}`)"
+      traefik.http.routers.icecast.entrypoints: "_ENTRYPOINTS_"
+      _TRAEFIK_ENABLED_traefik.http.routers.icecast.tls: "true"
+      _TRAEFIK_ENABLED_traefik.http.routers.icecast.tls.certresolver: "letsencrypt"
+      traefik.http.routers.icecast.service: icecast
+      traefik.http.services.icecast.loadbalancer.server.port: 8000
+    #expose:
+    #  - 8000
     ports:
       - "8000:8000"
     volumes:

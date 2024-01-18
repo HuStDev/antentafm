@@ -94,7 +94,7 @@ configure_node () {
     case "$5" in
         [Yy]* )
             sed -i 's#_SECRET_KEY_#12345678901234567890123456789012#g' "$1/backend/config.js"
-            sed -i 's#_VALIDATION_KEY_#1234567890#g' "$1/backend/config.js"
+            sed -i 's#_VALIDATION_ANSWER_#1234567890#g' "$1/backend/config.js"
             sed -i 's#_VALIDATION_QUESTION_#1234567890#g' "$1/backend/config.js"
 
             sed -i 's#_WEB_PROTOCOL_#http://#g' "$1/backend/config.js"
@@ -103,7 +103,7 @@ configure_node () {
         * )
             update_placeholder "(Node): Secret key for encryption (32 chars):" "_SECRET_KEY_" "$1/backend/config.js"
             update_placeholder "(Node): Validation question:" "_VALIDATION_QUESTION_" "$1/backend/config.js"
-            update_placeholder "(Node): Validation answer:" "_VALIDATION_KEY_" "$1/backend/config.js"
+            update_placeholder "(Node): Validation answer:" "_VALIDATION_ANSWER_" "$1/backend/config.js"
 
             sed -i 's#_WEB_PROTOCOL_#https://#g' "$1/backend/config.js"
 
@@ -148,11 +148,6 @@ configure_traefik () {
             ;;
     esac
 
-    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_traefik_cfg"
-    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_node_cfg"
-    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_icecast_cfg"
-    sed -i "s#_TLS_CHALLENGE_#${tls_challenge}#g" "$compose_rocketchat_cfg"
-
     sed -i "s/_TRAEFIK_ENABLED_/${traefik_enabled}/g" "$compose_traefik_cfg"
     sed -i "s/_TRAEFIK_ENABLED_/${traefik_enabled}/g" "$compose_node_cfg"
     sed -i "s/_TRAEFIK_ENABLED_/${traefik_enabled}/g" "$compose_icecast_cfg"
@@ -164,12 +159,18 @@ configure_traefik () {
 
     case "$2" in
         [Yy]* )
-            sed -i "s#_NETWORK_ALIASES_#networks:\n      antentafm:\n        aliases:\n          - 'radio.localhost'\n          - 'chat.localhost'\n          - 'stream.localhost'\n#g" "$compose_traefik_cfg"
+            sed -i "s#_NETWORK_ALIASES_#  aliases:\n          - 'radio.localhost'\n          - 'chat.localhost'\n          - 'stream.localhost'\n#g" "$compose_traefik_cfg"
+
+            sed -i "s#7000:7000#7777:7000#g" "$compose_node_cfg"
+            sed -i "s#8000:8000#8888:8000#g" "$compose_icecast_cfg"
+            sed -i "s#3000:3000#3333:3000#g" "$compose_rocketchat_cfg"
 
             ;;
 
         * )
             sed -i "s#_NETWORK_ALIASES_##g" "$compose_traefik_cfg"
+
+            sed -i "s#- "9229:9229"##- "9229:9229"#g" "$compose_node_cfg"
 
             ;;
     esac

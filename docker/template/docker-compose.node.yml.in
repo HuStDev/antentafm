@@ -11,19 +11,19 @@ services:
       - "antentafm"
     labels:
       traefik.enable: "${TRAEFIK_ENABLED}"
-      _TRAEFIK_ENABLED_traefik.http.routers.node_route.rule: "Host(`radio.${DOMAIN}`)" # Set domain
-      _TRAEFIK_ENABLED_traefik.http.routers.node_route.entrypoints: "_ENTRYPOINTS_" # Assign Trafike service
-      _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls: "_TLS_CHALLENGE_"
+      traefik.http.routers.node_route.rule: "Host(`radio.${DOMAIN}`)" # Set domain
+      traefik.http.routers.node_route.entrypoints: "_ENTRYPOINTS_" # Assign Trafike service
+      _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls: "true"
       _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.certresolver: "letsencrypt"
       _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.domains[0].main: "${DOMAIN}"
       _TRAEFIK_ENABLED_traefik.http.routers.node_route.tls.domains[0].sans: "*.${DOMAIN}"
-      _TRAEFIK_ENABLED_traefik.http.routers.node_route.service: "node_service" # Assign Trafike service
-      _TRAEFIK_ENABLED_traefik.http.services.node_service.loadbalancer.server.port: "7000" # Port of container used
+      traefik.http.routers.node_route.service: "node_service" # Assign Trafike service
+      traefik.http.services.node_service.loadbalancer.server.port: "7000" # Port of container used
     environment:
       - NPM_SKIP_START=${NPM_SKIP_START:-}
-    expose:
-      - 7000
-      - 9229
+    #expose:
+    #  - 7000
+    #  - 9229
     ports:
       - "7000:7000"
       - "9229:9229"

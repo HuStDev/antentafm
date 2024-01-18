@@ -103,7 +103,7 @@ export async function login(username, password) {
 }
 
 export async function register(user, password, validation) {
-    if (!(String(validation).toLowerCase() == String(Config.validation).toLocaleLowerCase())) {
+    if (!(String(validation).toLowerCase() == String(Config.validation_answer).toLocaleLowerCase())) {
         throw Errors.REGISTER_INVALID_VALIDATION;
     }
 

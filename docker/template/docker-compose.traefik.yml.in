@@ -5,9 +5,10 @@ volumes:
 
 services:
   reverse-proxy:
-    image: hust/traefik:${TRAEFIK_RELEASE}
+    image: traefik:${TRAEFIK_RELEASE}
     networks:
-      - "antentafm"
+      antentafm:
+      _NETWORK_ALIASES_
     command:
       # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       --log.level=DEBUG
@@ -31,7 +32,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - acme:/letsencrypt/
     restart: ${DOCKER_RESTART_POLICY}
-    _NETWORK_ALIASES_
 
 networks:
   antentafm:
